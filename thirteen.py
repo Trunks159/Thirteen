@@ -63,9 +63,6 @@ class Player():
 		self.turn = False
 	
 	def make_play(self, *cards):
-		print("From PLayer: ")
-		for card in cards:
-			print(card.face)
 		return Play(self.name, cards)		
 
 class Field(RelativeLayout):
