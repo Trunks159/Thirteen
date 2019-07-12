@@ -1,0 +1,12 @@
+7/11/19
+
+Somewhat finished first screen. I can't implement more than 2 humans at the moment.
+
+The play button.label goes in and out as a button or label, depending on if they've selected a button or not yet.
+Algorithm for that is:
+1. When a button is toggled, if the state becomes "down", the Object Property
+"shapeshifter_o" changes to a button, and vice versa.
+2. When shapeshifter_o changes, "on_shapeshifter_o" is called.
+3. The shapeshifter is removed, and is replaced by the new shapeshifter value.
+4. This button is binded (if its a button) with chaging the screen and 
+running a loop to create the Player() objects. Only 2 humans will be supported

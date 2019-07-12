@@ -1,0 +1,811 @@
+<?xml version="1.0"?>
+<CanvasElementsCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Pages>
+    <CanvasElements>
+      <PageSetup>
+        <PageName>Page 1</PageName>
+        <Orientation>Portrait</Orientation>
+        <PageSize>A4</PageSize>
+        <LaneType>None</LaneType>
+        <SwimLanesHeight>0</SwimLanesHeight>
+        <SwimLanesWidth>0</SwimLanesWidth>
+        <SwimLanesPosition>
+          <X>0</X>
+          <Y>0</Y>
+        </SwimLanesPosition>
+        <SwimLanesTextFontSize>0</SwimLanesTextFontSize>
+        <SwimLanesTextFontWeight>
+          <Weight>0</Weight>
+        </SwimLanesTextFontWeight>
+        <SwimLanesBackground>
+          <A>0</A>
+          <R>0</R>
+          <G>0</G>
+          <B>0</B>
+        </SwimLanesBackground>
+        <SwimLanesForeground>
+          <A>0</A>
+          <R>0</R>
+          <G>0</G>
+          <B>0</B>
+        </SwimLanesForeground>
+        <PageZoom>1</PageZoom>
+        <PageSelectedMenuItem>flowchart</PageSelectedMenuItem>
+      </PageSetup>
+      <SwimLanes />
+      <MultiSwimLanes />
+      <Shapes>
+        <CanvasElement>
+          <ObjectID>dbeb569b4e0540eca88f2f9dbeed453a</ObjectID>
+          <GroupID />
+          <ShapeType>ManualInput</ShapeType>
+          <ShapeEventType>Start</ShapeEventType>
+          <ShapeTaskLoop>None</ShapeTaskLoop>
+          <ShapeTaskBorder>Default</ShapeTaskBorder>
+          <IsCompensation>false</IsCompensation>
+          <IsSubProcess>false</IsSubProcess>
+          <IsAdHoc>false</IsAdHoc>
+          <Position>
+            <X>317</X>
+            <Y>22</Y>
+          </Position>
+          <Height>50</Height>
+          <Width>90</Width>
+          <Index>0</Index>
+          <Text>How many players?</Text>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <TextHorizontalAlignment>Center</TextHorizontalAlignment>
+          <TextVerticalAlignment>Center</TextVerticalAlignment>
+          <Background>
+            <A>255</A>
+            <R>255</R>
+            <G>255</G>
+            <B>255</B>
+          </Background>
+          <Foreground>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </Foreground>
+          <TextEndPoint>
+            <X>-15</X>
+            <Y>-450</Y>
+          </TextEndPoint>
+          <ClassText />
+          <ClassText2 />
+          <ClassText3 />
+          <ClassWizText />
+          <ClassWizOprText />
+          <BorderType>Solid</BorderType>
+          <ShapeStrokeThickness>1</ShapeStrokeThickness>
+        </CanvasElement>
+        <CanvasElement>
+          <ObjectID>7fc1111eb9be45bebb576bc020c72896</ObjectID>
+          <GroupID />
+          <ShapeType>Decision</ShapeType>
+          <ShapeEventType>Start</ShapeEventType>
+          <ShapeTaskLoop>None</ShapeTaskLoop>
+          <ShapeTaskBorder>Default</ShapeTaskBorder>
+          <IsCompensation>false</IsCompensation>
+          <IsSubProcess>false</IsSubProcess>
+          <IsAdHoc>false</IsAdHoc>
+          <Position>
+            <X>317</X>
+            <Y>162</Y>
+          </Position>
+          <Height>70</Height>
+          <Width>100</Width>
+          <Index>0</Index>
+          <Text>len(Game().players) &gt;2?</Text>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <TextHorizontalAlignment>Center</TextHorizontalAlignment>
+          <TextVerticalAlignment>Center</TextVerticalAlignment>
+          <Background>
+            <A>255</A>
+            <R>255</R>
+            <G>255</G>
+            <B>255</B>
+          </Background>
+          <Foreground>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </Foreground>
+          <TextEndPoint>
+            <X>930</X>
+            <Y>-80</Y>
+          </TextEndPoint>
+          <ClassText />
+          <ClassText2 />
+          <ClassText3 />
+          <ClassWizText />
+          <ClassWizOprText />
+          <BorderType>Solid</BorderType>
+          <ShapeStrokeThickness>1</ShapeStrokeThickness>
+        </CanvasElement>
+        <CanvasElement>
+          <ObjectID>621cdf3300524391875e82e494806dc6</ObjectID>
+          <GroupID />
+          <ShapeType>Process</ShapeType>
+          <ShapeEventType>Start</ShapeEventType>
+          <ShapeTaskLoop>None</ShapeTaskLoop>
+          <ShapeTaskBorder>Default</ShapeTaskBorder>
+          <IsCompensation>false</IsCompensation>
+          <IsSubProcess>false</IsSubProcess>
+          <IsAdHoc>false</IsAdHoc>
+          <Position>
+            <X>322</X>
+            <Y>102</Y>
+          </Position>
+          <Height>50</Height>
+          <Width>90</Width>
+          <Index>0</Index>
+          <Text>Game()</Text>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <TextHorizontalAlignment>Center</TextHorizontalAlignment>
+          <TextVerticalAlignment>Center</TextVerticalAlignment>
+          <Background>
+            <A>255</A>
+            <R>255</R>
+            <G>255</G>
+            <B>255</B>
+          </Background>
+          <Foreground>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </Foreground>
+          <TextEndPoint>
+            <X>-10</X>
+            <Y>-370</Y>
+          </TextEndPoint>
+          <ClassText />
+          <ClassText2 />
+          <ClassText3 />
+          <ClassWizText />
+          <ClassWizOprText />
+          <BorderType>Solid</BorderType>
+          <ShapeStrokeThickness>1</ShapeStrokeThickness>
+        </CanvasElement>
+        <CanvasElement>
+          <ObjectID>1c44a3fa27204d0eaacd5111abc9765c</ObjectID>
+          <GroupID />
+          <ShapeType>Process</ShapeType>
+          <ShapeEventType>Start</ShapeEventType>
+          <ShapeTaskLoop>None</ShapeTaskLoop>
+          <ShapeTaskBorder>Default</ShapeTaskBorder>
+          <IsCompensation>false</IsCompensation>
+          <IsSubProcess>false</IsSubProcess>
+          <IsAdHoc>false</IsAdHoc>
+          <Position>
+            <X>152</X>
+            <Y>332</Y>
+          </Position>
+          <Height>50</Height>
+          <Width>90</Width>
+          <Index>0</Index>
+          <Text />
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <TextHorizontalAlignment>Center</TextHorizontalAlignment>
+          <TextVerticalAlignment>Center</TextVerticalAlignment>
+          <Background>
+            <A>255</A>
+            <R>255</R>
+            <G>255</G>
+            <B>255</B>
+          </Background>
+          <Foreground>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </Foreground>
+          <TextEndPoint>
+            <X>-180</X>
+            <Y>-140</Y>
+          </TextEndPoint>
+          <ClassText />
+          <ClassText2 />
+          <ClassText3 />
+          <ClassWizText />
+          <ClassWizOprText />
+          <BorderType>Solid</BorderType>
+          <ShapeStrokeThickness>1</ShapeStrokeThickness>
+        </CanvasElement>
+        <CanvasElement>
+          <ObjectID>85421a9186524ecf8e598238c0943ac2</ObjectID>
+          <GroupID />
+          <ShapeType>Process</ShapeType>
+          <ShapeEventType>Start</ShapeEventType>
+          <ShapeTaskLoop>None</ShapeTaskLoop>
+          <ShapeTaskBorder>Default</ShapeTaskBorder>
+          <IsCompensation>false</IsCompensation>
+          <IsSubProcess>false</IsSubProcess>
+          <IsAdHoc>false</IsAdHoc>
+          <Position>
+            <X>152</X>
+            <Y>262</Y>
+          </Position>
+          <Height>50</Height>
+          <Width>90</Width>
+          <Index>0</Index>
+          <Text>Kivy Runs in  battle royal mode</Text>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <TextHorizontalAlignment>Center</TextHorizontalAlignment>
+          <TextVerticalAlignment>Center</TextVerticalAlignment>
+          <Background>
+            <A>255</A>
+            <R>255</R>
+            <G>255</G>
+            <B>255</B>
+          </Background>
+          <Foreground>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </Foreground>
+          <TextEndPoint>
+            <X>-180</X>
+            <Y>-210</Y>
+          </TextEndPoint>
+          <ClassText />
+          <ClassText2 />
+          <ClassText3 />
+          <ClassWizText />
+          <ClassWizOprText />
+          <BorderType>Solid</BorderType>
+          <ShapeStrokeThickness>1</ShapeStrokeThickness>
+        </CanvasElement>
+        <CanvasElement>
+          <ObjectID>468619d4e51d4f2eb88bc4e6a31da1dc</ObjectID>
+          <GroupID />
+          <ShapeType>Process</ShapeType>
+          <ShapeEventType>Start</ShapeEventType>
+          <ShapeTaskLoop>None</ShapeTaskLoop>
+          <ShapeTaskBorder>Default</ShapeTaskBorder>
+          <IsCompensation>false</IsCompensation>
+          <IsSubProcess>false</IsSubProcess>
+          <IsAdHoc>false</IsAdHoc>
+          <Position>
+            <X>152</X>
+            <Y>392</Y>
+          </Position>
+          <Height>50</Height>
+          <Width>90</Width>
+          <Index>0</Index>
+          <Text />
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <TextHorizontalAlignment>Center</TextHorizontalAlignment>
+          <TextVerticalAlignment>Center</TextVerticalAlignment>
+          <Background>
+            <A>255</A>
+            <R>255</R>
+            <G>255</G>
+            <B>255</B>
+          </Background>
+          <Foreground>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </Foreground>
+          <TextEndPoint>
+            <X>-180</X>
+            <Y>-80</Y>
+          </TextEndPoint>
+          <ClassText />
+          <ClassText2 />
+          <ClassText3 />
+          <ClassWizText />
+          <ClassWizOprText />
+          <BorderType>Solid</BorderType>
+          <ShapeStrokeThickness>1</ShapeStrokeThickness>
+        </CanvasElement>
+        <CanvasElement>
+          <ObjectID>da2010459e71438ba23eee8616455c07</ObjectID>
+          <GroupID />
+          <ShapeType>Process</ShapeType>
+          <ShapeEventType>Start</ShapeEventType>
+          <ShapeTaskLoop>None</ShapeTaskLoop>
+          <ShapeTaskBorder>Default</ShapeTaskBorder>
+          <IsCompensation>false</IsCompensation>
+          <IsSubProcess>false</IsSubProcess>
+          <IsAdHoc>false</IsAdHoc>
+          <Position>
+            <X>317</X>
+            <Y>262</Y>
+          </Position>
+          <Height>50</Height>
+          <Width>90</Width>
+          <Index>0</Index>
+          <Text>initialize deck, divide into 4 hands</Text>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <TextHorizontalAlignment>Center</TextHorizontalAlignment>
+          <TextVerticalAlignment>Center</TextVerticalAlignment>
+          <Background>
+            <A>255</A>
+            <R>255</R>
+            <G>255</G>
+            <B>255</B>
+          </Background>
+          <Foreground>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </Foreground>
+          <TextEndPoint>
+            <X>-15</X>
+            <Y>-210</Y>
+          </TextEndPoint>
+          <ClassText />
+          <ClassText2 />
+          <ClassText3 />
+          <ClassWizText />
+          <ClassWizOprText />
+          <BorderType>Solid</BorderType>
+          <ShapeStrokeThickness>1</ShapeStrokeThickness>
+        </CanvasElement>
+        <CanvasElement>
+          <ObjectID>732935cf24054461abced4cea2527667</ObjectID>
+          <GroupID />
+          <ShapeType>Process</ShapeType>
+          <ShapeEventType>Start</ShapeEventType>
+          <ShapeTaskLoop>None</ShapeTaskLoop>
+          <ShapeTaskBorder>Default</ShapeTaskBorder>
+          <IsCompensation>false</IsCompensation>
+          <IsSubProcess>false</IsSubProcess>
+          <IsAdHoc>false</IsAdHoc>
+          <Position>
+            <X>317</X>
+            <Y>332</Y>
+          </Position>
+          <Height>50</Height>
+          <Width>90</Width>
+          <Index>0</Index>
+          <Text>find_lowest card</Text>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <TextHorizontalAlignment>Center</TextHorizontalAlignment>
+          <TextVerticalAlignment>Center</TextVerticalAlignment>
+          <Background>
+            <A>255</A>
+            <R>255</R>
+            <G>255</G>
+            <B>255</B>
+          </Background>
+          <Foreground>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </Foreground>
+          <TextEndPoint>
+            <X>-15</X>
+            <Y>-140</Y>
+          </TextEndPoint>
+          <ClassText />
+          <ClassText2 />
+          <ClassText3 />
+          <ClassWizText />
+          <ClassWizOprText />
+          <BorderType>Solid</BorderType>
+          <ShapeStrokeThickness>1</ShapeStrokeThickness>
+        </CanvasElement>
+        <CanvasElement>
+          <ObjectID>10222126c9ed4197a76d66fbaba7b410</ObjectID>
+          <GroupID />
+          <ShapeType>Process</ShapeType>
+          <ShapeEventType>Start</ShapeEventType>
+          <ShapeTaskLoop>None</ShapeTaskLoop>
+          <ShapeTaskBorder>Default</ShapeTaskBorder>
+          <IsCompensation>false</IsCompensation>
+          <IsSubProcess>false</IsSubProcess>
+          <IsAdHoc>false</IsAdHoc>
+          <Position>
+            <X>317</X>
+            <Y>412</Y>
+          </Position>
+          <Height>270</Height>
+          <Width>90</Width>
+          <Index>0</Index>
+          <Text>Toggle the player with the lowest card's card. So if they had 3 of spades, itd be toggled automatically, and the player would be forced to either toggle another one of his cards, or select the field</Text>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <TextHorizontalAlignment>Center</TextHorizontalAlignment>
+          <TextVerticalAlignment>Center</TextVerticalAlignment>
+          <Background>
+            <A>255</A>
+            <R>255</R>
+            <G>255</G>
+            <B>255</B>
+          </Background>
+          <Foreground>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </Foreground>
+          <TextEndPoint>
+            <X>-15</X>
+            <Y>-60</Y>
+          </TextEndPoint>
+          <ClassText />
+          <ClassText2 />
+          <ClassText3 />
+          <ClassWizText />
+          <ClassWizOprText />
+          <BorderType>Solid</BorderType>
+          <ShapeStrokeThickness>1</ShapeStrokeThickness>
+        </CanvasElement>
+      </Shapes>
+      <LineShapes />
+      <LineCurvedShapes />
+      <FreeLineShapes />
+      <ConnectedShapes>
+        <ConnectedShapesRecord>
+          <ObjectID>09dbf40b3ef54a00abc21ba9aa51df2e</ObjectID>
+          <ParentShapeId>dbeb569b4e0540eca88f2f9dbeed453a</ParentShapeId>
+          <ChildShapeId>621cdf3300524391875e82e494806dc6</ChildShapeId>
+          <Text />
+          <Direction>LeftRight</Direction>
+          <StartConnectorPoint>Bottom</StartConnectorPoint>
+          <EndConnectorPoint>Top</EndConnectorPoint>
+          <LineColor>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </LineColor>
+          <TextColor>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </TextColor>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <StartMultiText />
+          <EndMultiText />
+          <ConnLinePointCollection>
+            <Point>
+              <X>369</X>
+              <Y>81</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>91</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>91</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>94</Y>
+            </Point>
+            <Point>
+              <X>374</X>
+              <Y>94</Y>
+            </Point>
+            <Point>
+              <X>374</X>
+              <Y>97</Y>
+            </Point>
+            <Point>
+              <X>374</X>
+              <Y>97</Y>
+            </Point>
+            <Point>
+              <X>374</X>
+              <Y>107</Y>
+            </Point>
+          </ConnLinePointCollection>
+          <IsModified>false</IsModified>
+          <StartLineOffsetX>0</StartLineOffsetX>
+          <StartLineOffsetY>0</StartLineOffsetY>
+          <EndLineOffsetX>0</EndLineOffsetX>
+          <EndLineOffsetY>0</EndLineOffsetY>
+          <LineStrokeThickness>1</LineStrokeThickness>
+        </ConnectedShapesRecord>
+        <ConnectedShapesRecord>
+          <ObjectID>1215b11c3f9949e4b8cf61a519b47fb1</ObjectID>
+          <ParentShapeId>7fc1111eb9be45bebb576bc020c72896</ParentShapeId>
+          <ChildShapeId>85421a9186524ecf8e598238c0943ac2</ChildShapeId>
+          <Text />
+          <Direction>LeftRight</Direction>
+          <StartConnectorPoint>Left</StartConnectorPoint>
+          <EndConnectorPoint>Top</EndConnectorPoint>
+          <LineColor>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </LineColor>
+          <TextColor>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </TextColor>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <StartMultiText />
+          <EndMultiText />
+          <ConnLinePointCollection>
+            <Point>
+              <X>322</X>
+              <Y>204</Y>
+            </Point>
+            <Point>
+              <X>312</X>
+              <Y>204</Y>
+            </Point>
+            <Point>
+              <X>312</X>
+              <Y>204</Y>
+            </Point>
+            <Point>
+              <X>204</X>
+              <Y>204</Y>
+            </Point>
+            <Point>
+              <X>204</X>
+              <Y>257</Y>
+            </Point>
+            <Point>
+              <X>204</X>
+              <Y>257</Y>
+            </Point>
+            <Point>
+              <X>204</X>
+              <Y>267</Y>
+            </Point>
+          </ConnLinePointCollection>
+          <IsModified>false</IsModified>
+          <StartLineOffsetX>0</StartLineOffsetX>
+          <StartLineOffsetY>0</StartLineOffsetY>
+          <EndLineOffsetX>0</EndLineOffsetX>
+          <EndLineOffsetY>0</EndLineOffsetY>
+          <LineStrokeThickness>1</LineStrokeThickness>
+        </ConnectedShapesRecord>
+        <ConnectedShapesRecord>
+          <ObjectID>d35c51d708f14760b434cec9739cea4d</ObjectID>
+          <ParentShapeId>7fc1111eb9be45bebb576bc020c72896</ParentShapeId>
+          <ChildShapeId>da2010459e71438ba23eee8616455c07</ChildShapeId>
+          <Text />
+          <Direction>LeftRight</Direction>
+          <StartConnectorPoint>Bottom</StartConnectorPoint>
+          <EndConnectorPoint>Top</EndConnectorPoint>
+          <LineColor>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </LineColor>
+          <TextColor>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </TextColor>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <StartMultiText />
+          <EndMultiText />
+          <ConnLinePointCollection>
+            <Point>
+              <X>374</X>
+              <Y>241</Y>
+            </Point>
+            <Point>
+              <X>374</X>
+              <Y>251</Y>
+            </Point>
+            <Point>
+              <X>374</X>
+              <Y>251</Y>
+            </Point>
+            <Point>
+              <X>374</X>
+              <Y>254</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>254</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>257</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>257</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>267</Y>
+            </Point>
+          </ConnLinePointCollection>
+          <IsModified>false</IsModified>
+          <StartLineOffsetX>0</StartLineOffsetX>
+          <StartLineOffsetY>0</StartLineOffsetY>
+          <EndLineOffsetX>0</EndLineOffsetX>
+          <EndLineOffsetY>0</EndLineOffsetY>
+          <LineStrokeThickness>1</LineStrokeThickness>
+        </ConnectedShapesRecord>
+        <ConnectedShapesRecord>
+          <ObjectID>2a0055b2f3ad44cdbc5d4e44bf07605c</ObjectID>
+          <ParentShapeId>da2010459e71438ba23eee8616455c07</ParentShapeId>
+          <ChildShapeId>732935cf24054461abced4cea2527667</ChildShapeId>
+          <Text />
+          <Direction>LeftRight</Direction>
+          <StartConnectorPoint>Bottom</StartConnectorPoint>
+          <EndConnectorPoint>Top</EndConnectorPoint>
+          <LineColor>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </LineColor>
+          <TextColor>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </TextColor>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <StartMultiText />
+          <EndMultiText />
+          <ConnLinePointCollection>
+            <Point>
+              <X>369</X>
+              <Y>321</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>331</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>331</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>329</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>329</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>327</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>327</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>337</Y>
+            </Point>
+          </ConnLinePointCollection>
+          <IsModified>false</IsModified>
+          <StartLineOffsetX>0</StartLineOffsetX>
+          <StartLineOffsetY>0</StartLineOffsetY>
+          <EndLineOffsetX>0</EndLineOffsetX>
+          <EndLineOffsetY>0</EndLineOffsetY>
+          <LineStrokeThickness>1</LineStrokeThickness>
+        </ConnectedShapesRecord>
+        <ConnectedShapesRecord>
+          <ObjectID>e8705978e4b84f018fb2f6942668bfb7</ObjectID>
+          <ParentShapeId>732935cf24054461abced4cea2527667</ParentShapeId>
+          <ChildShapeId>10222126c9ed4197a76d66fbaba7b410</ChildShapeId>
+          <Text />
+          <Direction>LeftRight</Direction>
+          <StartConnectorPoint>Bottom</StartConnectorPoint>
+          <EndConnectorPoint>Top</EndConnectorPoint>
+          <LineColor>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </LineColor>
+          <TextColor>
+            <A>255</A>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+          </TextColor>
+          <TextFontSize>12.5</TextFontSize>
+          <TextFontWeight>
+            <Weight>400</Weight>
+          </TextFontWeight>
+          <StartMultiText />
+          <EndMultiText />
+          <ConnLinePointCollection>
+            <Point>
+              <X>369</X>
+              <Y>391</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>401</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>401</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>404</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>404</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>407</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>407</Y>
+            </Point>
+            <Point>
+              <X>369</X>
+              <Y>417</Y>
+            </Point>
+          </ConnLinePointCollection>
+          <IsModified>false</IsModified>
+          <StartLineOffsetX>0</StartLineOffsetX>
+          <StartLineOffsetY>0</StartLineOffsetY>
+          <EndLineOffsetX>0</EndLineOffsetX>
+          <EndLineOffsetY>0</EndLineOffsetY>
+          <LineStrokeThickness>1</LineStrokeThickness>
+        </ConnectedShapesRecord>
+      </ConnectedShapes>
+    </CanvasElements>
+  </Pages>
+  <UserShapes />
+  <FlowdiaVersion>2.4</FlowdiaVersion>
+</CanvasElementsCollection>
