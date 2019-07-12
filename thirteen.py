@@ -183,6 +183,7 @@ class Player(GridLayout):
 		self.turn = False
 		self.current_play = []
 	
+<<<<<<< HEAD
 	def make_play(self):
 		p = Play(self.name, self.current_play)
 		for card in p.cards:
@@ -207,6 +208,16 @@ class Field(GridLayout):
 		for card in play.cards:
 			self.add_widget(card)
 				
+=======
+	def make_play(self, *cards):
+		return Play(self.name, cards)		
+
+class Field(RelativeLayout):
+	current = ObjectProperty(None)
+	def __init__(self, face, suit, card_facts, **kwargs):
+		super(Field, self).__init__(**kwargs)	
+
+>>>>>>> 6321de2af34d83f18d15f1019cd331c433482a7d
 class Play():
 	def __init__(self, player, cards):
 		self.player = player
