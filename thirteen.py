@@ -1,4 +1,5 @@
 import kivy
+from card_functions import order_cards, isSingle, isChain, isDuplicate, isChop
 from random import shuffle
 from kivy.app import App
 from kivy.uix.label import Label
@@ -218,32 +219,17 @@ class Player(GridLayout):
 		selected = self.selected_cards(self.hand)
 		p = Play(self.name, selected)
 		if p.combo == False:
-			self.put_cards_back(p, self.hand)
+			print("COMBO = FALSE...")
+			hand = self.hand + p.cards
+			self.hand = hand
 		return p	
 	
 #makes a new list with the Play() cards and self.hand cards and updates player's hand, which triggers on_hand
-	def put_cards_back(self, play, hand):
-		add_back = Play.cards
-		new_hand = []
-		for item in add_back:
-			new_hand.append(item)
-		for card in hand:
-			new_hand.append(item)
-		hand = new_hand
 
-	def order_cards(self, cards):
-		value = dict()
-		for card in cards:	#makes each card's value a key for the card
-			value[card.value] = card
-		list_value = sorted(list(value))	#converts all the keys to an ordered list
-		new_list = list()
-		for item in list_value:
-			new_list.append(value[item])
-		return new_list
 		
 #called by HUD, it orders P1's hand		
 	def order_hand(self, instance):	
-		self.hand = self.order_cards(self.hand)
+		self.hand = order_cards(self.hand)
 
 #deals with the current gamestate most of the time
 class Field(GridLayout):
@@ -251,7 +237,9 @@ class Field(GridLayout):
 	
 	def on_touch_down(self, touch):
 		if self.collide_point(*touch.pos):
-			new_play = self.parent.current_player.make_play()
+			current_player = self.parent.current_player			
+			new_play = current_player.make_play()
+
 			if self.current_play == None:
 				self.current_play = new_play
 				self.parent.next_turn()
@@ -261,7 +249,8 @@ class Field(GridLayout):
 				self.current_play = new_play
 			else:
 				print("You cant do this play")
-				self.parent.put_cards_back()
+				current_player.hand = current_player.hand.append(current_play.cards)
+
 				
 	def on_current_play(self, instance, play):
 		self.clear_widgets()
@@ -283,115 +272,45 @@ class Field(GridLayout):
 		else:
 			return True
 
+#each instance runs the value of a list of cards and finds the card combination
 class Play():
-	def __init__(self, player, cards):
-		self.player = player
+	def __init__(self, player_name, cards):
+		self.player_name = player_name
 		self.cards = cards
-		self.combo = self.run_tests()
-		print("This is the combo: ", self.combo)
+		self.combo = self.run_tests(self.cards)
 		self.value = self.get_value(self.cards)
 		
-		
-	def get_value(self, cards):
-		print("get_value is running")
-		total = 0
-		if self.isSingle() == False:
-			for card in cards:
-				total += card.value
-		else: 
-			total = cards[0].value
-			print("TESTING...TESTING")
-		return total
-	
-	def run_tests(self):
-		if self.cards == "skip":
+#takes cards and returns the card combo
+	def run_tests(self, cards):
+		if cards == "skip":
 			combo = "skip"
-		elif self.isSingle():
+		elif isSingle(cards):
 			combo = "single"
-		elif self.isChop():
+		elif isChop(cards):
 			combo = "chop"
-		elif self.isDouble():
+		elif isDuplicate(cards, 2):
 			combo = "double"
-		elif self.isTriple():
+		elif isDuplicate(cards, 3):
 			combo = "triple"
-		elif self.isChop():
+		elif isDuplicate(cards, 4):
 			combo = "bomb"
-		elif self.isChain():
+		elif isChain(cards):
 			combo = "chain"
 		else:
 			combo = False
 		return combo
-		
-	def isSingle(self):
-		return self.cards[0] == self.cards[len(self.cards)-1]
-			
-	def isChain(self): 
-		identity = True		#if true, it means its a chain and vice versa
-		if len(self.cards)< 3:	
-			identity = False
+				
+#takes a bunch of cards and returns value of those cards added up
+	def get_value(self, cards):
+		if isSingle(cards):
+			total = cards[0].value
 		else:
-			order = Player("Test").order_cards(self.cards)
-			for i in range(len(order)):
-				if i == 0:
-					identity = int(order[i].value + 1) != int(order[i+1].value)
-				elif i == len(order) -1:
-					identity = int(order[i].value - 1) != int(order[i-1].value)
-				elif i > 0 and i < len(order) - 1: #doesnt work yet?
-					identity = (int(order[i].value + 1) != int(order[i+1].value)) and (int(order[i].value - 1) != int(order[i-1].value))
-		return identity
-					
-	def isDouble(self):
-		identity = True
-		dub = []
-		if len(self.cards) != 2:
-			identity  = False
-		else:
-			for card in self.cards:
-				dub.append(card.face)
-			identity = len(set(dub))== 1
-		return identity
-		
-	def isTriple(self):
-		identity = True
-		trip = []
-		if len(self.cards) != 3:
-			identity  = False
-		else:
-			for card in self.cards:
-				trip.append(card.face)
-			identity = len(set(trip))== 1
-			
-		return identity
-		
-	def isBomb(self):
-		identity = True
-		trip = []
-		if len(self.cards) != 4:
-			identity  = False
-		else:
-			for card in self.cards:
-				trip.append(card.face)
-			identity = len(set(trip))== 1
-			
-		return identity
-		
-		
-	def isChop(self):	#not complete
-		chop = []
-		new_list = []
-		if len(self.cards) != 6:
-			identity  = False
-		else:
-			for card in self.cards:
-				chop.append(card.face)
-			identity = len(set(chop)) == .5*len(chop)
-	#	for i in range(len(faces)):
-	#		val[faces[i]] = i
-		
-	#	for item in chop:
-	#		new_list.append
-		
-		return identity		
+			total = 0
+			for card in cards:
+				total += card.value
+		return total
+	
+
 
 class HUD(GridLayout):
 	pass
