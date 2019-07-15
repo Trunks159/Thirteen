@@ -1,0 +1,26 @@
+7/15
+Game, Player, Field, and Play all have a very complex relationship of a 
+crap ton of functions that trigger each other
+
+I have to try to make how they behave with each other much more clear.
+
+Game is kind of the root widget, and is what connects Field and Player
+
+Player makes Play()s when its their turn and they touch the field.
+
+When the Play is made, Player removes the cards from hand and from the grid.
+
+If the combo they used was False, the cards are returned.
+
+What would make more sense is that when the turn player touches the field
+
+1. They make a Play with the toggled cards.
+2. Play uses its algorithm 
+
+Wait i think i can make Play a Gridlayout
+
+maybe idl
+
+3. If the combo comes up False, the play gets deleted and player reprimanded.
+4. If combo is a word, it is then compared to the Field's word.
+5. If True we move on and yadayada.
