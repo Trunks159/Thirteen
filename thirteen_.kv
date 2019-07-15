@@ -1,9 +1,19 @@
+<Human>:
+	background_normal : "Picture2.png"
+	background_down : "Picture1.png"
+	group : "players"
+	
 <HowManyPlayers>:
 	FloatLayout:
 		id: layout
 		Label:
 			text : "How Many Humans"
 			pos_hint : {"x" : 0, "y":.2}
+		Label:
+			id: shape_shifter
+			text : "Play"
+			size_hint : .3,.1
+			pos_hint : {"right":1, "y":0}
 		Grid:
 			rows : 1
 			size_hint : 1,.2
@@ -11,21 +21,12 @@
 			Human:
 				id: two
 				text: "2"
-				background_normal : "Picture2.png"
-				background_down : "Picture1.png"
-				group : "players"
 			Human:
 				id: three
 				text: "3"
-				background_normal : "Picture2.png"
-				background_down : "Picture1.png"
-				group : "players"
 			Human:
 				id: four
 				text: "4"
-				background_normal : "Picture2.png"
-				background_down : "Picture1.png"
-				group : "players"
 
 		Label:
 			text : "How Many CPUs"
@@ -49,7 +50,12 @@
 				background_normal : "Picture2.png"
 				background_down : "Picture1.png"
 				group : "cpus"
-<Game>:
+
+
+	
+<Game>:			
+	name: "game"
+	Field:
 	FloatLayout:
 		id: lay
 		
@@ -61,6 +67,7 @@
 <Field>:
 	rows : 1
 	size_hint : .35,.35
+	padding : 50
 	pos_hint : {"x" : .5 - (self.size_hint[0]/2), "y" : .5 - (self.size_hint[1]/2)}	
 	canvas:
 		Rectangle:
@@ -75,7 +82,10 @@
 		Rectangle:
 			pos : self.pos[0] + self.size[0], self.pos[1]
 			size: 5, self.size[1]
-	
+<HUD>:
+	cols : 2
+	rows : 2
+	size_hint : .25, .25
+	pos_hint: {"right" : 1, "y" : .17}
 
-			
 
