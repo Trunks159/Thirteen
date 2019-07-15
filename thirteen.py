@@ -147,9 +147,6 @@ class Card(ToggleButton):
 			k+=.1
 		return value
 		
-	def on_state(self, instance, value):
-		pass
-		
 class Deck():
 	def __init__(self):
 		self.cards = self.initialize_deck()
@@ -207,6 +204,7 @@ class Player(GridLayout):
 		while i < len(hand):
 			if hand[i].state == "down":
 				print("APPARENTLY DOWN WAS FOUND")
+				hand[i].state = "normal"	#untoggles button
 				self.remove_widget(hand[i])
 				selected.append(hand.pop(i))
 				continue
@@ -246,7 +244,8 @@ class Player(GridLayout):
 #called by HUD, it orders P1's hand		
 	def order_hand(self, instance):	
 		self.hand = self.order_cards(self.hand)
-		
+
+#deals with the current gamestate most of the time
 class Field(GridLayout):
 	current_play = ObjectProperty(None)
 	

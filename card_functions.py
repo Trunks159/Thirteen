@@ -1,4 +1,4 @@
 import random
 x = False
-y = False
+y = 
 print(x and y)
