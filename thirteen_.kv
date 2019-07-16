@@ -51,18 +51,33 @@
 				background_down : "Picture1.png"
 				group : "cpus"
 
-
-	
-<Game>:			
-	name: "game"
-	Field:
-	FloatLayout:
-		id: lay
-		
-<Player>:
+<PlayerGrid>:
 	rows : 1
 	size_hint : 1,.17
 	spacing: 20
+	
+<HUD>:
+	cols : 2
+	rows : 2
+	size_hint : .25, .25
+	pos_hint: {"right" : 1, "y" : .17}
+	
+<Game>:			
+	name: "game"
+	FloatLayout:
+		id: layout
+		PlayerGrid:
+			HUD:
+				Button: 
+					text: "Order Cards"
+		PlayerGrid
+			HUD:
+				Button:
+					text: "Order Cards"
+		Field:
+		
+		
+
 
 <Field>:
 	rows : 1
@@ -82,10 +97,6 @@
 		Rectangle:
 			pos : self.pos[0] + self.size[0], self.pos[1]
 			size: 5, self.size[1]
-<HUD>:
-	cols : 2
-	rows : 2
-	size_hint : .25, .25
-	pos_hint: {"right" : 1, "y" : .17}
+
 
 

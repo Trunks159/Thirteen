@@ -1,3 +1,5 @@
+from kivy.properties import ObjectProperty
+
 def order_cards(cards):
 	value = dict()
 	for card in cards:	#makes each card's value a key for the card
@@ -50,3 +52,18 @@ def isChop(cards):	#not complete
 #		new_list.append
 	
 	return identity	
+
+def set_players_dict(self, players):	#works
+	new_dict = {}
+	for player in players:
+		new_dict[player.name] = player
+	return new_dict
+
+x =["y", "o", "u"]
+
+def do_stuff(l):
+	l.pop()
+	
+do_stuff(x)
+
+print(x)
