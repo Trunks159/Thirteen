@@ -18,7 +18,19 @@ from kivy.core.window import Window
 from os import path	
 faces = ['3','4','5','6','7','8','9','10','J','Q','K','A','2']
 suits = ['S', 'C', 'D', 'H']		
-Builder.load_file("thirteen_.kv")
+Builder.load_file("new_start.kv")
+		
+class Game():
+	def __init__(self):
+	self.players =	[Player("Player 0"), Player("Player 1")]	
+	self.game_loop(self.players)
+
+def game_setup(players):
+	deck = Deck()
+	deck.deal(players)
+	current_player = self.find_lowest_card(players)
+	current_play = Play()
+	
 
 class WindowManager(ScreenManager):
 	pass
@@ -63,23 +75,46 @@ class HUD(GridLayout):
 	
 class PlayerGrid(GridLayout):
 	cards = ObjectProperty()
-	def __init__(self, player, **kwargs):
+	def __init__(self, name, **kwargs):
 		super(PlayerGrid, self).__init__(**kwargs)
-		self.player = player
-		self.cards = [CardButton(card) for card in self.player.hand]
+		self.name = name
 		self.pos_hint = {"bottom":1} if self.player.name == "Player 0" else {"top":1}	#dependent on player
 		self.display_children(self.cards)
+		self.hand = []
 		
-	def on_cards(self, instance, value):
-		self.clear_widgets()
-		self.display_children(value)
+	#def on_cards(self, instance, value):
+	#	self.clear_widgets()
+	#	self.display_children(value)
 			
-	def display_children(self, cards):
-		for card in cards:
-			self.add_widget(CardButton(self.cards))
+#	def display_children(self, cards):
+#		for card in cards:
+#			self.add_widget(CardButton(self.cards))
+#	play = ObjectProperty()
 			
-
-			
+	
+	#def return_cards(self, cards):
+	#	for card in cards:
+	#		self.hand.append(card)
+		
+	#def use_cards(self, hand):
+	#	i = len(hand) - 1
+	#	cards = []
+	#	while i >=0:
+	#		if hand[i].state == "down":
+	#			cards += hand.pop(i)
+	#		i-=1
+	#	if Play(x).combo == False:
+	#		self.return_cards(x)
+	#	else:
+	#		self.game.play(Play(x))
+	#		
+	#def order_hand(self, hand):	
+	#	return order_cards(hand)
+	
+	def on_play(self, instance, value):
+		self.use_cards(self.hand)
+	
+					
 class Field(GridLayout):
 	current_play = ObjectProperty(None)
 	def __init__(self, game, **kwargs):
@@ -95,9 +130,6 @@ class Field(GridLayout):
 		self.clear_widgets()
 		for card in play.cards:
 			self.add_widget(card)
-			
-#if the new play isn't high enough, or is not the same combo as the on the field, return False
-
 
 class CardButton(Button):
 	def __init__(self, info, game, **kwargs):
@@ -108,12 +140,7 @@ class CardButton(Button):
 	def on_state(self, instance, value):
 		self.game.current_player.hand[self.name].state = "selected"
 
-class GameScreen(Screen):
-	def __init__(self, **kwargs):
-		super(GameScreen, self).__init__(**kwargs)
-		self.game = Game()
-
-class Game():
+class Game(Screen):
 	def __init__(self):
 		self.players = [Player("Player " + str(i), self) for i in range(4)]
 		self.deck = Deck()
@@ -159,7 +186,7 @@ class Game():
 			print("Not a valid combo/value")
 			self.current_player.return_cards(Play.cards)
 		
-class Play():
+class Play(GridLayout):
 	def __init__(self, cards):
 		self.cards = cards
 		self.combo = "free" #self.run_tests(self.cards)
@@ -195,36 +222,6 @@ class Play():
 				total += card.value
 		return total
 
-class Player():
-	play = ObjectProperty()
-	def __init__(self, name, game):
-		self.name = name
-		self.hand = []
-		self.game = game
-			
-	
-	def return_cards(self, cards):
-		for card in cards:
-			self.hand.append(card)
-		
-	def use_cards(self, hand):
-		i = len(hand) - 1
-		cards = []
-		while i >=0:
-			if hand[i].state == "down":
-				cards += hand.pop(i)
-			i-=1
-		if Play(x).combo == False:
-			self.return_cards(x)
-		else:
-			self.game.play(Play(x))
-			
-	def order_hand(self, hand):	
-		return order_cards(hand)
-	
-	def on_play(self, instance, value):
-		self.use_cards(self.hand)
-	
 class Deck():
 	def __init__(self):
 		self.cards = []
@@ -242,7 +239,7 @@ class Deck():
 				hand.append(cards.pop())
 		return hands
 		
-class Card():
+class Card(ToggleButton):
 	def __init__(self, face, suit, **kwargs):
 		super(Card, self).__init__(**kwargs)
 		self.face = face
@@ -272,9 +269,6 @@ class Card():
 			k+=.1
 		return value
 	
-sm = WindowManager()
-hmp = HowManyPlayers()
-sm.add_widget(hmp)
 
 class ThirteenApp(App):
 	
@@ -283,9 +277,7 @@ class ThirteenApp(App):
 		Window.size = (560,940)
 		Window.left = 0
 		Window.top = 25
-		return sm
-
-
+		return Game()
 			
 if __name__ == '__main__':
 	app = ThirteenApp()

@@ -58,12 +58,3 @@ def set_players_dict(self, players):	#works
 	for player in players:
 		new_dict[player.name] = player
 	return new_dict
-
-x =["y", "o", "u"]
-
-def do_stuff(l):
-	l.pop()
-	
-do_stuff(x)
-
-print(x)
