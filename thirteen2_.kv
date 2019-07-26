@@ -2,18 +2,6 @@
 	background_normal : "Picture2.png"
 	background_down : "Picture1.png"
 	group : "players"
-
-<PlayerGrid>:
-	rows : 1
-	size_hint : 1,.17
-	spacing: 20
-
-<CurrentPlayer>:
-	size_hint : .1, .05
-	pos_hint: {"x" :.7, "y": .5}
-
-
-	
 	
 <HowManyPlayers>:
 	FloatLayout:
@@ -39,6 +27,7 @@
 			Human:
 				id: four
 				text: "4"
+
 		Label:
 			text : "How Many CPUs"
 			pos_hint : {"x" : 0, "y":0}
@@ -61,9 +50,26 @@
 				background_normal : "Picture2.png"
 				background_down : "Picture1.png"
 				group : "cpus"
-	
 <GameScreen>:
 	name : "game"
 	FloatLayout:
-		id: layout	
+		id: layout
+
+<PlayerGrid>:
+	rows : 1
+	size_hint : 1,.17
+	spacing: 20
+
+<FieldGrid>:
+	rows : 1
+	size_hint : .35,.35
+	padding : 50
+	pos_hint : {"x" : .5 - (self.size_hint[0]/2), "y" : .5 - (self.size_hint[1]/2)}	
+	Label:
+		text: "Place Cards Here"
+
+<CurrentPlayer>
+	size_hint : .1, .05
+	pos_hint: {"x" :.7, "y": .5}
+	
 

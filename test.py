@@ -1,4 +1,6 @@
-x = [['y']]
-y = x
-x[0] = 8
-print(id(y), id(x))
+bob = [8]
+
+def test(x):
+	x+=[9]
+	
+print(bob)
