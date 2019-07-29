@@ -64,7 +64,8 @@ class FieldGrid(GridLayout):
 	def on_touch_down(self, touch):
 		if self.collide_point(*touch.pos):
 			#self.field.current["player"].play()
-			print(self.field.game.players[0].hand)
+			#self.game.play()
+			self.field.play()
 		
 class CardButton(ToggleButton):
 	def __init__(self, card, **kwargs):
@@ -108,10 +109,16 @@ class GameScreen(Screen):
 			p = PlayerGrid(player)
 			self.dic[player.name] = p
 			self.ids.layout.add_widget(p)
-		self.ids.layout.add_widget(FieldGrid(game.field))
+		self.ids.layout.add_widget(FieldGrid(self.game.field))
 		#self.ids.layout.add_widget(CurrentPlayer(game.field))
-		
-		
+class CurrentPlayer(Label):
+	name = StringProperty("")	
+	def __init__(self, player, **kwargs):
+		super(CurrentPlayer, self).__init__(**kwargs)
+		self.player = player
+		self.name = self.player.name	
+		self.player.name = self.name
+				
 #class CurrentPlayer(Label):
 #	currentplayer = ObjectProperty()
 #	def __init__(self, field, **kwargs):
@@ -142,12 +149,27 @@ class Game():
 		while cards:
 			for hand in hands:
 				hand += [cards.pop()]
+	
+	def next_turn(self, player):
+		print("Next Turn runs")
+		for i in range(len(self.players)):
+			if player == self.players[i]:
+				break
+		print(i)
+		if i == len(self.players) - 1:
+			print("It is now , " , self.players[0].name, "'s turn")
+			return self.players[0]
+		else:
+			print("It is now , " , self.players[i+1].name, "'s turn")
+			return self.players[i+1]
+				
 class Field():
 	def __init__(self, game):
 		self.game = game	
-		#self.current = {"play": None, "player": self.who_goes_first(self.game.players)}
-
-	def who_goes_first(self, players): #2
+		self.current = {"play": None, "player": self._find_lowest_card(self.game.players)}
+		self.turns = 0
+		
+	def _find_lowest_card(self, players): #2
 		values = []
 		for player in players:
 			for card in player.hand:
@@ -158,13 +180,27 @@ class Field():
 				if card.value == lowest_card:
 					return player
 
-	def new_play(self, play):	#called by Player()'s play() method
+	def play(self):	#called by Player()'s play() method
+		player = self.current["player"]
+		play = player.play()
 		if play == "pass":
-			self.game.next_turn()
-		elif self.is_Valid(play, self.current["play"]):
 			self.current["play"] = play
+			self.current["player"] = self.game.next_turn(player)
+		elif play == False:
+			print("Try again but with a valid combo this time")
 		else:
-			self.returnCards(self.current["player"], play.cards)
+			if isValid(x, self.current["play"]):
+				self.current["play"] = play
+				self.current["player"] = self.game.next_turn(player)
+				
+			
+
+		#if play == "pass":
+		#	self.game.next_turn()
+		#elif self.is_Valid(play, self.current["play"]):
+		#	self.current["play"] = play
+		#else:
+		#	self.returnCards(self.current["player"], play.cards)
 		
 	def returnCards(self, player, cards):
 		for card in cards: player.hand.append(card)
@@ -185,7 +221,7 @@ class Field():
 				return False
 			else:
 				return True	
-
+				
 class Player():
 	def __init__(self, name,game, **kwargs):
 		super(Player, self).__init__(**kwargs)
@@ -204,10 +240,17 @@ class Player():
 			i+=1
 		if selected:
 			print("Old hand len: ", len(self.hand), "new_hand length", len(hand_copy))
-			self.hand = hand_copy
-			self.game.field.new_play(Play(selected))
+			
+			play = Play(selected)
+			if play == False:
+				self.hand += selected
+				return False
+			else:
+				self.hand = hand_copy
+				return play
 		else:
-			self.game.field.new_play("pass")
+			return "pass"
+			
 
 	def order_hand(self, hand):
 		value = dict()
