@@ -63,9 +63,10 @@ class FieldGrid(GridLayout):
 	
 	def on_touch_down(self, touch):
 		if self.collide_point(*touch.pos):
-			#self.field.current["player"].play()
-			#self.game.play()
-			self.field.play()
+			play = self.field.play()
+#			if isinstance(play, Play):
+	#			for card in play.cards:
+	#				self.add_widget(card)
 		
 class CardButton(ToggleButton):
 	def __init__(self, card, **kwargs):
@@ -167,7 +168,7 @@ class Game():
 			print("It is now , " , self.players[i+1].name, "'s turn")
 			return self.players[i+1]
 				
-class Field(EventDispatcher):
+class Field():
 	def __init__(self, game, **kwargs):
 		super(Field, self).__init__(**kwargs)	
 		self.game = game
@@ -190,12 +191,14 @@ class Field(EventDispatcher):
 		play = player.play()
 		if play == "pass":
 			self.current["play"] = play
+			#return self.current["play"]
 			self.current["player"] = self.game.next_turn(player)
 		elif play == False:
 			print("Try again but with a valid combo this time")
 		else:
 			if isValid(x, self.current["play"]):
 				self.current["play"] = play
+				#return self.current["play"]
 				self.current["player"] = self.game.next_turn(player)
 				
 			
