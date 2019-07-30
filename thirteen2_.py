@@ -110,15 +110,12 @@ class GameScreen(Screen):
 			self.dic[player.name] = p
 			self.ids.layout.add_widget(p)
 		self.ids.layout.add_widget(FieldGrid(self.game.field))
+		self.ids.layout.add_widget(CurrentPlayer(self.game.field.current))
 		#self.ids.layout.add_widget(CurrentPlayer(game.field))
 class CurrentPlayer(Label):
-	name = StringProperty("")	
-	def __init__(self, player, **kwargs):
-		super(CurrentPlayer, self).__init__(**kwargs)
-		self.player = player
-		self.name = self.player.name	
-		self.player.name = self.name
-				
+	my_current = ObjectProperty({})
+	def __init__(self, current, **kwargs):
+		super(CurrentPlayer, self).__init__(**kwargs) 
 #class CurrentPlayer(Label):
 #	currentplayer = ObjectProperty()
 #	def __init__(self, field, **kwargs):
@@ -163,9 +160,11 @@ class Game():
 			print("It is now , " , self.players[i+1].name, "'s turn")
 			return self.players[i+1]
 				
-class Field():
-	def __init__(self, game):
-		self.game = game	
+class Field(EventDispatcher):
+	current_player = ObjectProperty()
+	def __init__(self, game, **kwargs):
+		super(Field, self).__init__(**kwargs)	
+		self.game = game
 		self.current = {"play": None, "player": self._find_lowest_card(self.game.players)}
 		self.turns = 0
 		
@@ -223,8 +222,7 @@ class Field():
 				return True	
 				
 class Player():
-	def __init__(self, name,game, **kwargs):
-		super(Player, self).__init__(**kwargs)
+	def __init__(self, name, game):
 		self.name = name
 		self.game = game
 		self.hand = []

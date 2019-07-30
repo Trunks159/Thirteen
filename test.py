@@ -1,6 +1,5 @@
-bob = [8]
+x = 3
 
-def test(x):
-	x+=[9]
-	
-print(bob)
+dic = {"x":x}
+x = 5
+print(dic)
