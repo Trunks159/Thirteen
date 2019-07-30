@@ -113,9 +113,16 @@ class GameScreen(Screen):
 		self.ids.layout.add_widget(CurrentPlayer(self.game.field.current))
 		#self.ids.layout.add_widget(CurrentPlayer(game.field))
 class CurrentPlayer(Label):
-	my_current = ObjectProperty({})
+	current_player = ObjectProperty()
 	def __init__(self, current, **kwargs):
 		super(CurrentPlayer, self).__init__(**kwargs) 
+		self.current = current
+		self.current_player = self.current["player"]
+		self.current["player"] = self.current_player
+	
+	def on_current_player(self, instance, value):
+		print( "I guess this is test:",  value)
+		
 #class CurrentPlayer(Label):
 #	currentplayer = ObjectProperty()
 #	def __init__(self, field, **kwargs):
@@ -161,7 +168,6 @@ class Game():
 			return self.players[i+1]
 				
 class Field(EventDispatcher):
-	current_player = ObjectProperty()
 	def __init__(self, game, **kwargs):
 		super(Field, self).__init__(**kwargs)	
 		self.game = game
