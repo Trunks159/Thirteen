@@ -18,14 +18,24 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from os import path	
+import copy
+
 faces = ['3','4','5','6','7','8','9','10','J','Q','K','A','2']
 suits = ['S', 'C', 'D', 'H']		
 Builder.load_file("thirteen2_.kv")
 
+"""
+Legend:
+NI = NOT IMPLEMENTED YET
+
+"""
+
+
 class WindowManager(ScreenManager):
 	pass
 	
-class HowManyPlayers(Screen):
+
+class HowManyPlayers(Screen):	#NOT IMPLEMENTED FULLY
 	humans = ObjectProperty(None) #how many humans selected
 	shape_shifter_o = ObjectProperty(None) #button info that changes from btn to label depending on if an option was selected
 	def on_shape_shifter_o(self, instance, value):#removes button or label and replaces it
@@ -46,7 +56,9 @@ class HowManyPlayers(Screen):
 		#sm.add_widget(Game(players))
 		sm.current = "game"
 		
-class Human(ToggleButton):
+		
+	
+class Human(ToggleButton):	#NOT IMPLEMENTED FULLY
 	def on_state(self, instance, value):
 		if value == "down":
 			hmp.humans = self.text
@@ -57,17 +69,33 @@ class Human(ToggleButton):
 			hmp.shape_shifter_o = Label(text = hmp.ids.shape_shifter.text,size_hint = hmp.ids.shape_shifter.size_hint,pos_hint = hmp.ids.shape_shifter.pos_hint)
 
 class FieldGrid(GridLayout):
-	def __init__(self, field, **kwargs):
+	game = ObjectProperty()
+	def __init__(self, game, **kwargs):
 		super(FieldGrid, self).__init__(**kwargs)
-		self.field = field
+		self.game = game
+		self.current_play = self.game.field.current["play"]
+		self.display_everything(self.current_play)
 	
+	def display_everything(self, play):
+		if self.children: self.clear_widgets()
+		if isinstance(play, Play):
+			for card in play.cards: self.add_widget(card)
+		else:
+			self.add_widget(Label(text = "Tap here to make play"))
+		
 	def on_touch_down(self, touch):
 		if self.collide_point(*touch.pos):
-			play = self.field.play()
+			#play = self.field.play()
+			gs.change_game()
 #			if isinstance(play, Play):
 	#			for card in play.cards:
 	#				self.add_widget(card)
-		
+	
+	def on_game(self, instance, value):
+		play = value.field.current["play"]
+		if  play != self.current_play:
+			self.display_everything(play)
+			
 class CardButton(ToggleButton):
 	def __init__(self, card, **kwargs):
 		super(CardButton, self).__init__(**kwargs)		
@@ -76,53 +104,84 @@ class CardButton(ToggleButton):
 	
 	def on_state(self, instance, value):
 		self.card.selected = True if value == "down" else False
-		
+
+
 class PlayerGrid(GridLayout):
+"""
+A. Takes Game() and Player()
+A. Hand is ObjectProperty(), points to PLayer().hand
+
+1. When self.hand is set in the init, on_hand is called
+2. When Game() gets changed,on_game gets called
+3a. If the hand changed, hand will update.
+term - 3b. If hand is the same, nothing gets updated
+term - 4a. on_hand is called, which updates screen
+"""
 	hand = ListProperty([])
-	def __init__(self, player, **kwargs):
+	def __init__(self, game, player **kwargs):
 		super(PlayerGrid, self).__init__(**kwargs)	
+		self.game = game
 		self.player = player
-		self.player.hand = self.hand
-		self.pos_hint = self._setPosition(self.player.name)
+		self.hand = self.player.hand
 		
-	def _setPosition(self, name):
-		if name == "Player 0":
-			return {"bottom": 1}
-		else:
-			return {"top":1}	
-	
+	def _hand_changed(self, current_hand, new_hand):
+		return current_hand != new_hand:
+				
+	def on_game(self, instance, value):
+		if _hand_changed(self.hand, self.player.hand):
+			self.hand = player.hand
+			
 	def on_hand(self, instance, value):
-		self.clear_widgets()
+		if self.children: self.clear_widgets()
 		for item in value:
 			self.add_widget(CardButton(item))
+			
+	
 	
 class GameScreen(Screen):
+	game = ObjectProperty()
 	def __init__(self, **kwargs):
 		super(GameScreen, self).__init__(**kwargs)
-		self.game = Game()	
-		self.dic = {}
+		self.game = Game()
 		self.display_grids(self.game)
 		self.game.start_game()
-
 		
 	def display_grids(self, game):
 		for player in game.players : 
-			p = PlayerGrid(player)
-			self.dic[player.name] = p
+			p = PlayerGrid(self, player)
 			self.ids.layout.add_widget(p)
-		self.ids.layout.add_widget(FieldGrid(self.game.field))
+		self.ids.layout.add_widget(FieldGrid(self.game))
 		self.ids.layout.add_widget(CurrentPlayer(self.game.field.current))
-		#self.ids.layout.add_widget(CurrentPlayer(game.field))
+		
+	def change_game(self):
+		self.game = copy.copy(self.game)
+			
+		
+	def on_game(self, instance, value):
+		for child in self.children[0].children:
+			child.game = value
+			try:
+				child.game = value
+			except:
+				continue
+				
+		print("New Game: ", value)
+		
 class CurrentPlayer(Label):
 	current_player = ObjectProperty()
-	def __init__(self, current, **kwargs):
+	def __init__(self, game, **kwargs):
 		super(CurrentPlayer, self).__init__(**kwargs) 
-		self.current = current
-		self.current_player = self.current["player"]
-		self.current["player"] = self.current_player
+		self.game = game
+		self.current_player = self.game.field.current["player"]
+		self.text = ""
 	
+	def on_game(self, instance, value):
+
+		self.current_player = value.field.current["player"]
+		
 	def on_current_player(self, instance, value):
-		print( "I guess this is test:",  value)
+		self.text = value.name
+		
 		
 #class CurrentPlayer(Label):
 #	currentplayer = ObjectProperty()
