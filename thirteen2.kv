@@ -2,6 +2,18 @@
 	background_normal : "Picture2.png"
 	background_down : "Picture1.png"
 	group : "players"
+
+<PlayerGrid>:
+	rows : 1
+	size_hint : 1,.17
+	spacing: 20
+
+<CurrentPlayer>:
+	size_hint : .1, .05
+	pos_hint: {"x" :.7, "y": .5}
+
+
+	
 	
 <HowManyPlayers>:
 	FloatLayout:
@@ -14,7 +26,7 @@
 			text : "Play"
 			size_hint : .3,.1
 			pos_hint : {"right":1, "y":0}
-		Grid:
+		GridLayout:
 			rows : 1
 			size_hint : 1,.2
 			pos_hint : {"x" : .5 - (self.size_hint[0]/2), "y":.5}
@@ -27,11 +39,10 @@
 			Human:
 				id: four
 				text: "4"
-
 		Label:
 			text : "How Many CPUs"
 			pos_hint : {"x" : 0, "y":0}
-		Grid:
+		GridLayout:
 			rows : 1
 			size_hint : 1,.2
 			pos_hint : {"x" : .5 - (self.size_hint[0]/2), "y":.3}				
@@ -50,42 +61,9 @@
 				background_normal : "Picture2.png"
 				background_down : "Picture1.png"
 				group : "cpus"
-
-
 	
-<Game>:			
-	name: "game"
-
+<GameScreen>:
+	name : "game"
 	FloatLayout:
-		id: lay
-		
-<Player>:
-	rows : 1
-	size_hint : 1,.17
-	spacing: 20
-
-<Field>:
-	rows : 1
-	size_hint : .35,.35
-	padding : 50
-	pos_hint : {"x" : .5 - (self.size_hint[0]/2), "y" : .5 - (self.size_hint[1]/2)}	
-	canvas:
-		Rectangle:
-			pos : self.pos
-			size: self.size[0],5
-		Rectangle:
-			pos : self.pos[0], self.pos[1] + self.size[1]
-			size: self.size[0],5
-		Rectangle:
-			pos : self.pos
-			size: 5,self.size[1]
-		Rectangle:
-			pos : self.pos[0] + self.size[0], self.pos[1]
-			size: 5, self.size[1]
-<HUD>:
-	cols : 2
-	rows : 2
-	size_hint : .25, .25
-	pos_hint: {"right" : 1, "y" : .17}
-
+		id: layout	
 
