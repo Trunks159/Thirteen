@@ -24,17 +24,9 @@ faces = ['3','4','5','6','7','8','9','10','J','Q','K','A','2']
 suits = ['S', 'C', 'D', 'H']		
 Builder.load_file("thirteen2_.kv")
 
-"""
-Legend:
-NI = NOT IMPLEMENTED YET
-
-"""
-
-
 class WindowManager(ScreenManager):
 	pass
 	
-
 class HowManyPlayers(Screen):	#NOT IMPLEMENTED FULLY
 	humans = ObjectProperty(None) #how many humans selected
 	shape_shifter_o = ObjectProperty(None) #button info that changes from btn to label depending on if an option was selected
@@ -56,8 +48,6 @@ class HowManyPlayers(Screen):	#NOT IMPLEMENTED FULLY
 		#sm.add_widget(Game(players))
 		sm.current = "game"
 		
-		
-	
 class Human(ToggleButton):	#NOT IMPLEMENTED FULLY
 	def on_state(self, instance, value):
 		if value == "down":
@@ -70,32 +60,39 @@ class Human(ToggleButton):	#NOT IMPLEMENTED FULLY
 
 class FieldGrid(GridLayout):
 	game = ObjectProperty()
+	current_play = ObjectProperty()
 	def __init__(self, game, **kwargs):
 		super(FieldGrid, self).__init__(**kwargs)
+		self.started = False
 		self.game = game
-		self.current_play = self.game.field.current["play"]
-		self.display_everything(self.current_play)
-	
-	def display_everything(self, play):
-		if self.children: self.clear_widgets()
-		if isinstance(play, Play):
-			for card in play.cards: self.add_widget(card)
-		else:
-			self.add_widget(Label(text = "Tap here to make play"))
+		self.current_play = self.game.get_current("play")
+		self.started = True
 		
 	def on_touch_down(self, touch):
 		if self.collide_point(*touch.pos):
-			#play = self.field.play()
-			gs.change_game()
-#			if isinstance(play, Play):
-	#			for card in play.cards:
-	#				self.add_widget(card)
+			game = self.game.new_play()
+			if game:
+				gs.change_game()					
 	
+	def cards_changed(self, current_cards, new_cards):
+		return current_cards != new_cards
+		
 	def on_game(self, instance, value):
-		play = value.field.current["play"]
-		if  play != self.current_play:
-			self.display_everything(play)
-			
+		if self.started:
+			new_play = self.game.get_current("play")
+			if isinstance(new_play, Play):
+				self.update_current_play(new_play)
+				
+	def update_current_play(self, new_play):
+		if self.cards_changed(self.game.get_actual_current_play(), new_play.cards):
+			self.current_play = new_play
+	
+	def on_current_play(self, instance, value):
+		if self.children: self.clear_widgets()
+		if value.cards:
+			for card in value.cards: self.add_widget(CardButton(card))
+		else: self.add_widget(Label(text = "Tap here to make play"))	
+	
 class CardButton(ToggleButton):
 	def __init__(self, card, **kwargs):
 		super(CardButton, self).__init__(**kwargs)		
@@ -105,53 +102,50 @@ class CardButton(ToggleButton):
 	def on_state(self, instance, value):
 		self.card.selected = True if value == "down" else False
 
-
 class PlayerGrid(GridLayout):
-"""
-A. Takes Game() and Player()
-A. Hand is ObjectProperty(), points to PLayer().hand
 
-1. When self.hand is set in the init, on_hand is called
-2. When Game() gets changed,on_game gets called
-3a. If the hand changed, hand will update.
-term - 3b. If hand is the same, nothing gets updated
-term - 4a. on_hand is called, which updates screen
-"""
+#A. Takes Game() and Player()
+#A. Hand is ObjectProperty(), points to PLayer().hand
+
+#1. When self.hand is set in the init, on_hand is called
+#2. When Game() gets changed,on_game gets called
+#3a. If the hand changed, hand will update.
+#term - 3b. If hand is the same, nothing gets updated
+#term - 4a. on_hand is called, which updates screen	"""
+	game = ObjectProperty()
 	hand = ListProperty([])
-	def __init__(self, game, player **kwargs):
+	def __init__(self, game, player, **kwargs):
 		super(PlayerGrid, self).__init__(**kwargs)	
-		self.game = game
 		self.player = player
 		self.hand = self.player.hand
+		self.game = game
+		self.pos_hint = {"bottom": 1} if self.player.name == "Player 0" else {"top": 1}
 		
-	def _hand_changed(self, current_hand, new_hand):
-		return current_hand != new_hand:
+	def hand_changed(self, current_hand, new_hand):
+		return current_hand != new_hand
 				
 	def on_game(self, instance, value):
-		if _hand_changed(self.hand, self.player.hand):
-			self.hand = player.hand
+		if self.hand_changed(self.hand, self.player.hand):
+			self.hand = self.player.hand
 			
 	def on_hand(self, instance, value):
 		if self.children: self.clear_widgets()
 		for item in value:
 			self.add_widget(CardButton(item))
 			
-	
-	
 class GameScreen(Screen):
 	game = ObjectProperty()
 	def __init__(self, **kwargs):
 		super(GameScreen, self).__init__(**kwargs)
 		self.game = Game()
 		self.display_grids(self.game)
-		self.game.start_game()
 		
 	def display_grids(self, game):
 		for player in game.players : 
-			p = PlayerGrid(self, player)
+			p = PlayerGrid(self.game, player)
 			self.ids.layout.add_widget(p)
 		self.ids.layout.add_widget(FieldGrid(self.game))
-		self.ids.layout.add_widget(CurrentPlayer(self.game.field.current))
+		self.ids.layout.add_widget(CurrentPlayer(self.game))
 		
 	def change_game(self):
 		self.game = copy.copy(self.game)
@@ -169,27 +163,18 @@ class GameScreen(Screen):
 		
 class CurrentPlayer(Label):
 	current_player = ObjectProperty()
+	game = ObjectProperty()
 	def __init__(self, game, **kwargs):
 		super(CurrentPlayer, self).__init__(**kwargs) 
 		self.game = game
-		self.current_player = self.game.field.current["player"]
-		self.text = ""
+		self.current_player = self.game.get_current("player")
 	
 	def on_game(self, instance, value):
-
-		self.current_player = value.field.current["player"]
+		self.current_player = value.get_current("player")
+		print("current player game changed")
 		
 	def on_current_player(self, instance, value):
 		self.text = value.name
-		
-		
-#class CurrentPlayer(Label):
-#	currentplayer = ObjectProperty()
-#	def __init__(self, field, **kwargs):
-#		super(CurrentPlayer, self).__init__(**kwargs)
-#		self.field = field
-#		self.current_player = self.field.current["player"]
-#		self.text = self.current_player.name
 			
 class Game():
 	def __init__(self):
@@ -199,7 +184,6 @@ class Game():
 		
 	def start_game(self):
 		self.deal_cards(self.players)
-		
 
 	def deal_cards(self, players):	#1
 		hands = [players[0].hand, players[1].hand, [], []]
@@ -214,80 +198,120 @@ class Game():
 			for hand in hands:
 				hand += [cards.pop()]
 	
-	def next_turn(self, player):
-		print("Next Turn runs")
-		for i in range(len(self.players)):
-			if player == self.players[i]:
-				break
-		print(i)
-		if i == len(self.players) - 1:
-			print("It is now , " , self.players[0].name, "'s turn")
-			return self.players[0]
-		else:
-			print("It is now , " , self.players[i+1].name, "'s turn")
-			return self.players[i+1]
+	def get_current(self, x):
+		return self.field.get_current(x)
+		
+	def get_plays(self):
+		return self.field.get_plays()
+	
+	def get_actual_current_play(self):
+		return self.field.get_actual_current_play()
+		
+	def new_play(self):
+		current_player = self.get_current("player")
+		play = current_player.play()
+		verdict = self.field.play(play, self.players)
+		if verdict == False and play.cards: current_player.addCards(play.cards)
+		return verdict
 				
 class Field():
+#mainly deals with current gamestate affairs
 	def __init__(self, game, **kwargs):
 		super(Field, self).__init__(**kwargs)	
 		self.game = game
-		self.current = {"play": None, "player": self._find_lowest_card(self.game.players)}
-		self.turns = 0
+		self.lowest_value = self.get_lowest_value(self.game.players)
+		self.plays = [Play()]
+		self.player = self.first_to_go(self.lowest_value, self.game.players)
+		self.first_turn = True
+		self.free_pass = False
 		
-	def _find_lowest_card(self, players): #2
+	def get_lowest_value(self, players):
 		values = []
 		for player in players:
 			for card in player.hand:
 				values.append(card.value)
-		lowest_card = min(values)
+		return min(values)
+
+	def first_to_go(self, lowest_value, players):
 		for player in players:
 			for card in player.hand:
-				if card.value == lowest_card:
+				if card.value == lowest_value:
 					return player
 
-	def play(self):	#called by Player()'s play() method
-		player = self.current["player"]
-		play = player.play()
-		if play == "pass":
-			self.current["play"] = play
-			#return self.current["play"]
-			self.current["player"] = self.game.next_turn(player)
-		elif play == False:
-			print("Try again but with a valid combo this time")
+	def play(self, play, players):	#called by Player()'s play() method
+		current_play = self.get_current("play")
+		if self.isValid(current_play, play):
+			self.player = self.nextTurn(self.player, players)
+			self.addPlay(play)
+			return True
 		else:
-			if isValid(x, self.current["play"]):
-				self.current["play"] = play
-				#return self.current["play"]
-				self.current["player"] = self.game.next_turn(player)
+			return False
 				
-			
-
-		#if play == "pass":
-		#	self.game.next_turn()
-		#elif self.is_Valid(play, self.current["play"]):
-		#	self.current["play"] = play
-		#else:
-		#	self.returnCards(self.current["player"], play.cards)
+	def nextTurn(self, current_player, players):
+		for i in range(len(players)):
+			if current_player == players[i]:
+				break
+		if i == len(players) - 1:
+			print("It is now , " , players[0].name, "'s turn")
+			return players[0]
+		else:
+			print("It is now , " , players[i+1].name, "'s turn")
+			return players[i+1]
 		
-	def returnCards(self, player, cards):
-		for card in cards: player.hand.append(card)
-		
-	def is_Valid(self, new_play, current_play):
-		if current_play == None:
-			count = False
-			for card in new_play.cards:
-				if card.face == "3":
-					count = True
-			return count
+	def isValid(self, current_play, new_play):
+		if self.first_turn:
+			if new_play.get_combo() == "pass":
+				print("Player with lowest card goes first!")
+				return False
+			else:
+				verdict = False
+				for card in new_play.cards:
+					if card.value == self.lowest_value:
+						self.first_turn = False
+						verdict = True
+						return verdict
+						break
+				if verdict == False: 
+					print("You must use your lowest card first")
+					
+		elif new_play.get_combo() == "pass":
+			return True
 		else:
 			if new_play.value <= current_play.value:
 				print("That card(s) value too low. Try again...")
 				return False
-			elif new_play.combo != current_play.combo:
-				print("What you put was not a " + current_play.combo)
+			elif new_play.get_combo() != current_play.get_combo():
+				print("What you put was not a " + current_play.get_combo())
 				return False
 			else:
 				return True	
+				
+	def addPlay(self, play):
+		self.plays.insert(0, play)
+		print("these are all the plays: " , self.plays)
+		
+	def get_current(self, x):
+		if x == "player":
+			return self.player
+		elif x == "play":
+			return self.plays[0]
+	
+	def get_plays(self):
+		return self.plays
+
+	def get_actual_current_play(self):
+		for play in self.plays:
+			if play.combo != "pass":
+				return play
+				break
+	
+	def free_play(self):
+		i = 0
+		for play in self.plays:
+			if play.combo == "pass":
+				i+= 1
+		if i == len(self.game.players) - 1:
+			self.plays.addPlay(Play(combo = None))
 				
 class Player():
 	def __init__(self, name, game):
@@ -306,18 +330,19 @@ class Player():
 			i+=1
 		if selected:
 			print("Old hand len: ", len(self.hand), "new_hand length", len(hand_copy))
-			
 			play = Play(selected)
-			if play == False:
-				self.hand += selected
-				return False
-			else:
+			if play.combo:
+				print("play gets returned")
 				self.hand = hand_copy
 				return play
-		else:
-			return "pass"
-			
+			else:
+				self.hand += selected
+				print("This is not a valid combo")
+				return False
 
+		else:
+			return Play()
+			
 	def order_hand(self, hand):
 		value = dict()
 		for card in hand:	#makes each card's value a key for the card
@@ -328,10 +353,19 @@ class Player():
 			new_list.append(value[item])
 		return new_list
 
+	def addCards(self, cards):	
+		self.hand += cards
+
+	def getHand(self):	
+		return self.hand
+	
+	def getName(self):
+		return self.name
+	
 class Play():
-	def __init__(self, cards):
+	def __init__(self, cards = None, combo = self.get_combo(), **kwargs):
 		self.cards = cards
-		#self.combo = self.run_tests()
+		self.combo = self.get_combo()
 		self.value = self.get_value(self.cards)
 		
 		
@@ -344,24 +378,23 @@ class Play():
 		else:
 			return None
 	
-	def run_tests(self):
-		if self.cards == None:
-			combo = "pass"
+	def run_tests(self, cards):
+		if cards == None:
+			return "pass"
 		elif self.isSingle():
-			combo = "single"
+			return "single"
 		elif self.isChop():
-			combo = "chop"
+			return "chop"
 		elif self.isDouble():
-			combo = "double"
+			return "double"
 		elif self.isTriple():
-			combo = "triple"
+			return "triple"
 		elif self.isChop():
-			combo = "bomb"
+			return "bomb"
 		elif self.isChain():
-			combo = "chain"
+			return "chain"
 		else:
-			combo = False
-		return combo
+			return False
 		
 	def isSingle(self):
 		return self.cards[0] == self.cards[len(self.cards)-1]
@@ -433,6 +466,9 @@ class Play():
 	#		new_list.append
 		
 		return identity	
+	
+	def get_combo(self):
+		return self.run_tests(self.cards)
 		
 class Card():	#perfect
 	def __init__(self, face, suit):
@@ -463,7 +499,6 @@ class Card():	#perfect
 			k+=.1
 		return value
 		
-
 
 sm = WindowManager()
 hmp = HowManyPlayers()
