@@ -351,19 +351,15 @@ class Player():
 			else:
 				print("This is not a valid combo")
 				return False
-
 		else:
 			return Play(cards = "pass")
 			
 	def order_hand(self, hand):
-		value = dict()
+		value = {}
 		for card in hand:	#makes each card's value a key for the card
 			value[card.value] = card
 		list_value = sorted(list(value))	#converts all the keys to an ordered list
-		new_list = list()
-		for item in list_value:
-			new_list.append(value[item])
-		return new_list
+		return [value[item] for item in list_value]
 
 	def addCards(self, cards):	
 		self.hand += cards
@@ -405,10 +401,7 @@ class Play():
 		value = {}
 		for card in cards:
 			value[card.value] = card
-		new_list = []
-		for item in sorted(list(value)):
-			new_list.append(value[item])
-		return new_list	
+		return [value[item] for item in list_value]
 	
 	def isSingle(self, cards):
 		if len(cards) == 1: return "single"
@@ -463,8 +456,7 @@ class Play():
 			chop = [card.face for card in cards]	
 			if len(set(chop)) == 3:
 				return self.isChain(cards)
-				
-		
+					
 class Card():	#perfect
 	def __init__(self, face, suit):
 		self.face = face
@@ -474,25 +466,25 @@ class Card():	#perfect
 		self.selected = False
 		
 	def get_value(self, face, suit):
-		return self.get_face_value()[face] + self.get_suit_value()[suit]
+		return self.get_face_value(face) + self.get_suit_value(suit)
 	
-	def get_face_value(self):
+	def get_face_value(self, face):
 		faces = ['3','4','5','6','7','8','9','10','J','Q','K','A','2']
 		value = {}
 		i = 0
 		for item in faces:
 			value[item] = i
 			i+=1
-		return value
+		return value[face]
 			
-	def get_suit_value(self):
+	def get_suit_value(self, suit):
 		suits = ['S', 'C', 'D', 'H']
 		value = {}
 		k = 0
 		for item in suits:
 			value[item] = k
 			k+=.1
-		return value
+		return value[suit]
 		
 
 sm = WindowManager()
