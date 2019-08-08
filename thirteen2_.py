@@ -65,7 +65,7 @@ class FieldGrid(GridLayout):
 		super(FieldGrid, self).__init__(**kwargs)
 		self.started = False
 		self.game = game
-		self.current_play = self.game.get_current("play")
+		self.current_play = self.game.get_actual_current_play()
 		self.started = True
 		
 	def on_touch_down(self, touch):
@@ -79,7 +79,7 @@ class FieldGrid(GridLayout):
 		
 	def on_game(self, instance, value):
 		if self.started:
-			new_play = self.game.get_current("play")
+			new_play = self.game.get_actual_current_play()
 			if isinstance(new_play, Play):
 				self.update_current_play(new_play)
 				
@@ -210,20 +210,32 @@ class Game():
 	def new_play(self):
 		current_player = self.get_current("player")
 		play = current_player.play()
-		verdict = self.field.play(play, self.players)
-		if verdict == False and play.cards: current_player.addCards(play.cards)
-		return verdict
+		if play:
+			verdict = self.field.play(play, self.players)
+			if verdict == False and isinstance(play.cards, list): current_player.addCards(play.cards)
+			return verdict
+		else:
+			return False
 				
 class Field():
 #mainly deals with current gamestate affairs
 	def __init__(self, game, **kwargs):
-		super(Field, self).__init__(**kwargs)	
 		self.game = game
 		self.lowest_value = self.get_lowest_value(self.game.players)
-		self.plays = [Play()]
+		self.plays = []
 		self.player = self.first_to_go(self.lowest_value, self.game.players)
 		self.first_turn = True
 		self.free_pass = False
+
+	def play(self, play, players):	#called by Player()'s play() method
+		current_play = self.get_actual_current_play()
+		if current_play: print("New play = ", play.get_combo(), ", Current Play = ", current_play.get_combo())
+		if self.isValid(current_play, play):
+			self.player = self.nextTurn(self.player, players)
+			self.addPlay(play)
+			return True
+		else:
+			return False
 		
 	def get_lowest_value(self, players):
 		values = []
@@ -237,15 +249,6 @@ class Field():
 			for card in player.hand:
 				if card.value == lowest_value:
 					return player
-
-	def play(self, play, players):	#called by Player()'s play() method
-		current_play = self.get_current("play")
-		if self.isValid(current_play, play):
-			self.player = self.nextTurn(self.player, players)
-			self.addPlay(play)
-			return True
-		else:
-			return False
 				
 	def nextTurn(self, current_player, players):
 		for i in range(len(players)):
@@ -259,37 +262,40 @@ class Field():
 			return players[i+1]
 		
 	def isValid(self, current_play, new_play):
-		if self.first_turn:
+		if current_play:
 			if new_play.get_combo() == "pass":
-				print("Player with lowest card goes first!")
-				return False
-			else:
-				verdict = False
-				for card in new_play.cards:
-					if card.value == self.lowest_value:
-						self.first_turn = False
-						verdict = True
-						return verdict
-						break
-				if verdict == False: 
-					print("You must use your lowest card first")
-					
-		elif new_play.get_combo() == "pass":
-			return True
-		else:
-			if new_play.value <= current_play.value:
+				return True
+			elif new_play.get_value() <= current_play.get_value():
 				print("That card(s) value too low. Try again...")
 				return False
 			elif new_play.get_combo() != current_play.get_combo():
 				print("What you put was not a " + current_play.get_combo())
 				return False
 			else:
-				return True	
-				
-	def addPlay(self, play):
-		self.plays.insert(0, play)
-		print("these are all the plays: " , self.plays)
-		
+				return True		
+		else:
+			if new_play.get_combo() == "pass":
+				print("You gotta put something down!")
+				return False
+			elif self.first_turn:
+				if self.hasLowest(new_play):
+					self.first_turn = False
+					return True
+				else:
+					return False
+			else:
+				return True
+	
+	def hasLowest(self, play):
+		verdict = False
+		for card in play.cards:
+			if card.value == self.lowest_value:
+				verdict = True
+				return verdict
+				break
+		if verdict == False: 
+			print("You must use your lowest card first")
+	
 	def get_current(self, x):
 		if x == "player":
 			return self.player
@@ -300,18 +306,26 @@ class Field():
 		return self.plays
 
 	def get_actual_current_play(self):
-		for play in self.plays:
-			if play.combo != "pass":
-				return play
-				break
-	
-	def free_play(self):
+		if self.plays:
+			for play in self.plays:
+				if play.get_combo() != "pass":
+					return play
+					break
+				
+	def addPlay(self, play):
+		plays = self.plays
+		plays.insert(0, play)
+		if self.free_play(plays):
+			for i in range(len(plays)):
+				plays.pop()
+			print("FREE PLAY")
+			
+	def free_play(self, plays):
 		i = 0
-		for play in self.plays:
-			if play.combo == "pass":
+		for play in plays:
+			if play.get_combo() == "pass":
 				i+= 1
-		if i == len(self.game.players) - 1:
-			self.plays.addPlay(Play(combo = None))
+		return i == len(self.game.players) - 1
 				
 class Player():
 	def __init__(self, name, game):
@@ -331,17 +345,15 @@ class Player():
 		if selected:
 			print("Old hand len: ", len(self.hand), "new_hand length", len(hand_copy))
 			play = Play(selected)
-			if play.combo:
-				print("play gets returned")
+			if play.get_combo():
 				self.hand = hand_copy
 				return play
 			else:
-				self.hand += selected
 				print("This is not a valid combo")
 				return False
 
 		else:
-			return Play()
+			return Play(cards = "pass")
 			
 	def order_hand(self, hand):
 		value = dict()
@@ -363,112 +375,95 @@ class Player():
 		return self.name
 	
 class Play():
-	def __init__(self, cards = None, combo = self.get_combo(), **kwargs):
+	def __init__(self, cards):
 		self.cards = cards
-		self.combo = self.get_combo()
-		self.value = self.get_value(self.cards)
-		
-		
-	def get_value(self, cards):
-		if cards:
-			total = 0
-			for card in cards:
-				total += card.value
-			return total
-		else:
-			return None
 	
-	def run_tests(self, cards):
-		if cards == None:
-			return "pass"
-		elif self.isSingle():
-			return "single"
-		elif self.isChop():
-			return "chop"
-		elif self.isDouble():
-			return "double"
-		elif self.isTriple():
-			return "triple"
-		elif self.isChop():
-			return "bomb"
-		elif self.isChain():
-			return "chain"
+	def get_value(self):
+		if self.cards == "pass":
+			return self.cards
 		else:
-			return False
-		
-	def isSingle(self):
-		return self.cards[0] == self.cards[len(self.cards)-1]
-			
-	def isChain(self): 
-		identity = True		#if true, it means its a chain and vice versa
-		if len(self.cards)< 3:	
-			identity = False
-		else:
-			order = Player("Test").order_cards(self.cards)
-			for i in range(len(order)):
-				if i == 0:
-					identity = int(order[i].value + 1) != int(order[i+1].value)
-				elif i == len(order) -1:
-					identity = int(order[i].value - 1) != int(order[i-1].value)
-				elif i > 0 and i < len(order) - 1: #doesnt work yet?
-					identity = (int(order[i].value + 1) != int(order[i+1].value)) and (int(order[i].value - 1) != int(order[i-1].value))
-		return identity
-					
-	def isDouble(self):
-		identity = True
-		dub = []
-		if len(self.cards) != 2:
-			identity  = False
-		else:
-			for card in self.cards:
-				dub.append(card.face)
-			identity = len(set(dub))== 1
-		return identity
-		
-	def isTriple(self):
-		identity = True
-		trip = []
-		if len(self.cards) != 3:
-			identity  = False
-		else:
-			for card in self.cards:
-				trip.append(card.face)
-			identity = len(set(trip))== 1
-			
-		return identity
-		
-	def isBomb(self):
-		identity = True
-		trip = []
-		if len(self.cards) != 4:
-			identity  = False
-		else:
-			for card in self.cards:
-				trip.append(card.face)
-			identity = len(set(trip))== 1
-			
-		return identity
-		
-		
-	def isChop(self):	#not complete
-		chop = []
-		new_list = []
-		if len(self.cards) != 6:
-			identity  = False
-		else:
-			for card in self.cards:
-				chop.append(card.face)
-			identity = len(set(chop)) == .5*len(chop)
-	#	for i in range(len(faces)):
-	#		val[faces[i]] = i
-		
-	#	for item in chop:
-	#		new_list.append
-		
-		return identity	
+			return sum([card.value for card in self.cards])
 	
 	def get_combo(self):
-		return self.run_tests(self.cards)
+		if self.cards == "pass":
+			return self.cards
+		elif self.isSingle(self.cards):
+			return "single"
+		elif self.isChop(self.cards):
+			return "chop"
+		elif self.isDouble(self.cards):
+			return "double"
+		elif self.isTriple(self.cards):
+			return "triple"
+		elif self.isChop(self.cards):
+			return "bomb"
+		elif self.isChain(self.cards):
+			return "chain"
+		return False
+	
+	def order(self, cards):
+		value = {}
+		for card in cards:
+			value[card.value] = card
+		new_list = []
+		for item in sorted(list(value)):
+			new_list.append(value[item])
+		return new_list	
+	
+	def isSingle(self, cards):
+		if len(cards) == 1: return "single"
+			
+	def isChain(self, cards): 
+		if len(cards)< 3:	
+			return False
+		else:
+			order = self.order(cards)
+			for i in range(len(order)):
+				if i == 0:
+					if int(order[i].value + 1) != int(order[i+1].value): 
+						return False
+						break
+				elif i == len(order) -1:
+					if int(order[i].value - 1) != int(order[i-1].value):
+						print("bad")
+						return False
+						break
+				elif i > 0 and i < len(order) - 1: #doesnt work yet?
+					if (int(order[i].value + 1) != int(order[i+1].value)) or (int(order[i].value - 1) != int(order[i-1].value)):
+						return False				
+						break
+		return True
+			
+	def isDouble(self, cards):
+		if len(cards) != 2:
+			return False
+		else:
+			dub = [card.face for card in cards]
+			return len(set(dub))== 1
+		
+	def isTriple(self, cards):
+		if len(cards) != 3:
+			return False
+		else:
+			trip = [card.face for card in cards]
+			return len(set(trip))== 1
+		return True
+		
+	def isBomb(self, cards):
+		if len(cards) != 4:
+			return False
+		else:
+			bomb = [card.face for card in cards]
+			return len(set(bomb))== 1
+		
+	def isChop(self, cards):	#not complete
+		if len(cards) != 6:
+			return False
+		else:
+			chop = [card.face for card in cards]	
+			if len(set(chop)) == 3:
+				return self.isChain(cards)
+				
 		
 class Card():	#perfect
 	def __init__(self, face, suit):

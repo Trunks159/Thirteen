@@ -1,4 +1,3 @@
-def test( cat = 4, **kwargs):
-	print(cat)
-	
-test(cat = 5)
+taco = ["t", "k"]
+bob = [i + "9" for i in taco]
+print(bob)
