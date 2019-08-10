@@ -51,9 +51,17 @@
 				background_down : "Picture1.png"
 				group : "cpus"
 <GameScreen>:
-	name : "game"
+	name: "game"
 	FloatLayout:
 		id: layout
+		Button:
+			text: "PLAYER 1"
+			size_hint: .5, .5	
+			pos_hint: {"x" : .5 - (self.size_hint[0]/2), "top" : 1}
+		Button:
+			text: "PLAYER 0"
+			size_hint: .5,.5
+			pos_hint: {"x" : .5 - (self.size_hint[0]/2)}
 
 <PlayerGrid>:
 	rows : 1
@@ -70,5 +78,37 @@
 
 <CurrentPlayer>
 	size_hint : .1, .05
-	pos_hint: {"x" :.7, "y": .5}
+	pos_hint: {"right" : 1, "y": .5}
+	font_size: 40
 
+<FreePlay>:
+	size_hint : .1, .05
+	pos_hint: {"right" : 1, "y": .35}
+	font_size: 40
+	text : "Free Play"
+
+<CombosGrid>:
+	rows : 1
+	size_hint : .7, .1
+	pos_hint : {"x" : .5 - (self.size_hint[0]/2), "y" : .27}	
+	
+<OrderButton>:
+	size_hint : .1,.1
+	font_size : 40
+	text : "Order Hand"
+	
+
+<WinScreen>:
+	name: "win"
+	Label:
+		text: root.player + " Has Won!"
+		size_hint: .2,.2
+		pos_hint: {"top":1}
+	PlayAgainButton:
+		text: "Play Again"
+		size_hint: .2,.2
+	Button:
+		text: "Quit"
+		size_hint: .2,.2
+		pos_hint: {"right": 1}
+		on_press: quit()

@@ -1,3 +1,7 @@
-taco = ["t", "k"]
-bob = [i + "9" for i in taco]
-print(bob)
+def f():
+	return 5
+	
+def x(y = f()):
+	return y
+	
+print(x())

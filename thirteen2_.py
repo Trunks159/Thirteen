@@ -12,6 +12,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.event import EventDispatcher
 from kivy.properties import StringProperty
 from kivy.properties import ListProperty
+from kivy.properties import BooleanProperty
 from kivy.properties import ObjectProperty
 from kivy.graphics import Color, Rectangle, Line
 from kivy.lang import Builder
@@ -72,7 +73,7 @@ class FieldGrid(GridLayout):
 		if self.collide_point(*touch.pos):
 			game = self.game.new_play()
 			if game:
-				gs.change_game()					
+				gs.change_game(copy.copy(self.game))					
 	
 	def cards_changed(self, current_cards, new_cards):
 		return current_cards != new_cards
@@ -119,7 +120,7 @@ class PlayerGrid(GridLayout):
 		self.player = player
 		self.hand = self.player.hand
 		self.game = game
-		self.pos_hint = {"bottom": 1} if self.player.name == "Player 0" else {"top": 1}
+		self.pos_hint = {"y": .05} if self.player.name == "Player 0" else {"top": .95}
 		
 	def hand_changed(self, current_hand, new_hand):
 		return current_hand != new_hand
@@ -132,11 +133,22 @@ class PlayerGrid(GridLayout):
 		if self.children: self.clear_widgets()
 		for item in value:
 			self.add_widget(CardButton(item))
+		self.size_hint[0] = 1 - ((13-len(self.children))/13)
+		self.pos_hint = {"x" : .5 - (self.size_hint[0]/2)}	
 			
 class GameScreen(Screen):
 	game = ObjectProperty()
+	win_player = ObjectProperty()
 	def __init__(self, **kwargs):
 		super(GameScreen, self).__init__(**kwargs)
+		self.newGame()
+			
+	def newGame(self):
+		layout = self.children[0]
+		if layout.children: layout.clear_widgets()
+		self.setupEverything()
+				
+	def setupEverything(self):
 		self.game = Game()
 		self.display_grids(self.game)
 		
@@ -144,22 +156,66 @@ class GameScreen(Screen):
 		for player in game.players : 
 			p = PlayerGrid(self.game, player)
 			self.ids.layout.add_widget(p)
+			self.ids.layout.add_widget(OrderButton(self.game, player))
 		self.ids.layout.add_widget(FieldGrid(self.game))
 		self.ids.layout.add_widget(CurrentPlayer(self.game))
+		l = Label(text = "PLAYER 1", size_hint = [.1, .05]) 
+		l.pos_hint = {"x" : .5 - (l.size_hint[0]/2), "top" : 1}
+		self.ids.layout.add_widget(l)
+		l = Label(text = "PLAYER 0", size_hint = [.1, .05]) 
+		l.pos_hint = {"x" : .5 - (l.size_hint[0]/2)}
+		self.ids.layout.add_widget(l)
+		self.ids.layout.add_widget(FreePlay(self.game))
+		self.ids.layout.add_widget(CombosGrid(self.game))
+
 		
-	def change_game(self):
-		self.game = copy.copy(self.game)
-			
+	def change_game(self, game_copy):
+		self.game = game_copy
+	
+	def get_win_player(self):
+		return self.win_player
 		
 	def on_game(self, instance, value):
+		try:
+			self.win_player = value.win_player
+		except: 
+			self.win_player = False
+		
 		for child in self.children[0].children:
 			child.game = value
 			try:
 				child.game = value
 			except:
 				continue
-				
 		print("New Game: ", value)
+		
+	def on_win_player(self, instance, value):
+		if isinstance(value, Player):
+			sm.current = "win"
+			screen = sm.get_screen("win")
+			screen.set_player(value.name)
+
+class OrderButton(Button):
+	def __init__(self, game, player, **kwargs):
+		super(OrderButton, self).__init__(**kwargs)	
+		self.player = player
+		self.game = game
+		self.pos_hint =  {"y": .05+ .2} if self.player.name == "Player 0" else {"top": .95 - .2}	
+		
+	def on_press(self):
+		self.player.order_hand()
+		gs.change_game(copy.copy(self.game))
+	
+class WinScreen(Screen):
+	player = StringProperty("")
+	
+	def set_player(self, name):
+		self.player = name
+	
+class PlayAgainButton(Button):
+	def on_press(self):
+		sm.get_screen("game").newGame()
+		sm.current = "game"
 		
 class CurrentPlayer(Label):
 	current_player = ObjectProperty()
@@ -174,13 +230,50 @@ class CurrentPlayer(Label):
 		print("current player game changed")
 		
 	def on_current_player(self, instance, value):
-		self.text = value.name
+		self.text = value.name + " Go!"
+	
+class FreePlay(Label):
+	game = ObjectProperty()
+	free = BooleanProperty(False)
+	def __init__(self, game, **kwargs):
+		super(FreePlay, self).__init__(**kwargs) 
+		self.game = game
+		
+	def on_game(self, instance, value):
+		self.free = False if value.get_plays() else True
 			
+	def on_free(self, instance, value):
+		if value:
+			self.color = [0,0,1,1]
+		else:
+			self.color = [0,0,1,.3]
+
+class CombosGrid(GridLayout):
+	game = ObjectProperty()
+	def __init__(self, game, **kwargs):
+		super(CombosGrid, self).__init__(**kwargs)	
+		self.combos = ["single", "double", "triple", "bomb", "chain", "chop"]
+		self.default_color = [1,1,1,.2]
+		self.activated_color = [1,1,1,1]
+		self.game = game
+		for combo in self.combos: self.add_widget(Label(text = combo.title(), color = self.default_color))
+		
+	def on_game(self, instance, value):
+		print("signature")
+		play = value.field.get_actual_current_play()
+		if isinstance(play, Play):
+			for child in self.children: 
+				if child.text == play.get_combo().title(): 
+					child.color = self.activated_color 
+				else:
+					child.color = self.default_color
+		
 class Game():
-	def __init__(self):
+	def __init__(self, **kwargs):
 		self.players = [Player("Player 0", self), Player("Player 1", self)]
 		self.start_game()
 		self.field = Field(self)
+		self.win_player = None
 		
 	def start_game(self):
 		self.deal_cards(self.players)
@@ -212,10 +305,19 @@ class Game():
 		play = current_player.play()
 		if play:
 			verdict = self.field.play(play, self.players)
-			if verdict == False and isinstance(play.cards, list): current_player.addCards(play.cards)
+			if verdict == False and isinstance(play.cards, list): 
+				current_player.addCards(play.cards)
+			else:
+				self.checkWin(self.players)
 			return verdict
 		else:
 			return False
+	
+	def checkWin(self, players):
+		for player in players:
+			if player.hand == []:
+				self.win_player = player
+				break
 				
 class Field():
 #mainly deals with current gamestate affairs
@@ -354,12 +456,12 @@ class Player():
 		else:
 			return Play(cards = "pass")
 			
-	def order_hand(self, hand):
+	def order_hand(self):
 		value = {}
-		for card in hand:	#makes each card's value a key for the card
+		for card in self.hand:	#makes each card's value a key for the card
 			value[card.value] = card
 		list_value = sorted(list(value))	#converts all the keys to an ordered list
-		return [value[item] for item in list_value]
+		self.hand = [value[item] for item in list_value]
 
 	def addCards(self, cards):	
 		self.hand += cards
@@ -378,7 +480,8 @@ class Play():
 		if self.cards == "pass":
 			return self.cards
 		else:
-			return sum([card.value for card in self.cards])
+			new_list = sorted([card.value for card in self.cards])
+			return new_list[len(new_list)-1]
 	
 	def get_combo(self):
 		if self.cards == "pass":
@@ -401,6 +504,7 @@ class Play():
 		value = {}
 		for card in cards:
 			value[card.value] = card
+		list_value = sorted(list(value))
 		return [value[item] for item in list_value]
 	
 	def isSingle(self, cards):
@@ -453,12 +557,12 @@ class Play():
 		if len(cards) != 6:
 			return False
 		else:
-			chop = [card.face for card in cards]	
-			if len(set(chop)) == 3:
-				return self.isChain(cards)
+			chop = set([card.face for card in cards])	
+			if len(chop) == 3:
+				return self.isChain([Card(item) for item in chop])
 					
 class Card():	#perfect
-	def __init__(self, face, suit):
+	def __init__(self, face, suit = None):
 		self.face = face
 		self.suit = suit
 		self.value = self.get_value(self.face, self.suit)
@@ -485,13 +589,16 @@ class Card():	#perfect
 			value[item] = k
 			k+=.1
 		return value[suit]
-		
+	
+	
 
 sm = WindowManager()
 hmp = HowManyPlayers()
-sm.add_widget(hmp)
 gs = GameScreen()
+ws = WinScreen()
+sm.add_widget(hmp)
 sm.add_widget(gs)
+sm.add_widget(ws)
 
 
 class ThirteenApp(App):
