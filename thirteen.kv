@@ -69,15 +69,17 @@
 			text: "PLAYER 1"
 			size_hint: .5, .5	
 			pos_hint: {"x" : .5 - (self.size_hint[0]/2), "top" : 1}
+			color : 1,0,0,1
 		Button:
 			text: "PLAYER 0"
 			size_hint: .5,.5
 			pos_hint: {"x" : .5 - (self.size_hint[0]/2)}
-
+			color : 1,0,0,1
+			
 <PlayerGrid>:
 	rows : 1
-	size_hint : 1,.17
-	spacing: 20			
+	size_hint : 1, .17
+	spacing: .01*self.size[0]		
 
 <FieldGrid>:
 	canvas.before:
@@ -132,7 +134,7 @@
 		pos_hint: {"right": 1}
 		on_press: quit()
 		
-<CardButton>:
+<CardImage>:
 	canvas.before:
 		Color:
 			rgba: .5, .5, .5, 1

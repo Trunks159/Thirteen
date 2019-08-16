@@ -32,6 +32,27 @@ def set_color(name):
 class WindowManager(ScreenManager):
 	pass
 	
+class CardImage(Image):
+	state = StringProperty("")
+	def __init__(self, card, **kwargs):
+		super(CardImage, self).__init__(**kwargs)
+		self.card = card
+		self.states = {"normal": "Pictures/Cards/" + self.card.face + self.card.suit + ".png", "down": "Pictures/Cards/back.png"}
+		self.state = "normal"
+		self.allow_stretch = True
+		self.keep_ratio = False
+		
+	def change_state(self):
+		self.state = "down" if self.state == "normal" else "normal" 
+
+	def on_touch_down(self, touch):
+		if self.collide_point(*touch.pos):
+			self.change_state()
+
+	def on_state(self, instance, value):
+		self.source = self.states[value]
+		self.card.selected = True if value == "down" else False
+	
 class HowManyPlayers(Screen):	#NOT IMPLEMENTED FULLY
 	humans = ObjectProperty(None) #how many humans selected
 	shape_shifter_o = ObjectProperty(None) #button info that changes from btn to label depending on if an option was selected
@@ -95,7 +116,7 @@ class FieldGrid(GridLayout):
 	def on_current_play(self, instance, value):
 		if self.children: self.clear_widgets()
 		if value.cards:
-			for card in value.cards: self.add_widget(CardButton(card))
+			for card in value.cards: self.add_widget(CardImage(card))
 		else: self.add_widget(Label(text = "Tap here to make play"))	
 	
 class CardButton(ToggleButton):
@@ -136,7 +157,7 @@ class PlayerGrid(GridLayout):
 	def on_hand(self, instance, value):
 		if self.children: self.clear_widgets()
 		for item in value:
-			self.add_widget(CardButton(item))
+			self.add_widget(CardImage(item))
 		self.size_hint[0] = 1 - ((13-len(self.children))/13)
 		self.pos_hint = {"x" : .5 - (self.size_hint[0]/2)}	
 			
@@ -213,7 +234,6 @@ class OrderButton(Button):
 	
 class WinScreen(Screen):
 	player = StringProperty("")
-	
 	def set_player(self, name):
 		self.player = name
 	
@@ -326,7 +346,7 @@ class Game():
 				break
 				
 class Field():
-#mainly deals with current gamestate affairs
+#mainly deals with Current gamestate affairs
 	def __init__(self, game, **kwargs):
 		self.game = game
 		self.lowest_value = self.get_lowest_value(self.game.players)
@@ -500,7 +520,7 @@ class Play():
 			return "double"
 		elif self.isTriple(self.cards):
 			return "triple"
-		elif self.isChop(self.cards):
+		elif self.isBomb(self.cards):
 			return "bomb"
 		elif self.isChain(self.cards):
 			return "chain"
@@ -565,7 +585,7 @@ class Play():
 		else:
 			chop = set([card.face for card in cards])	
 			if len(chop) == 3:
-				return self.isChain([Card(item) for item in chop])
+				return self.isChain([Card(item, "s") for item in chop])
 					
 class Card():	#perfect
 	def __init__(self, face, suit):
@@ -611,7 +631,7 @@ class ThirteenApp(App):
 	
 	def build(self):
 		Window.clearcolor = [1, 1, 1, 1]
-		Window.size = (560,940)
+		#Window.size = (560,940)
 		Window.left = 0
 		Window.top = 25
 		return sm
