@@ -514,17 +514,11 @@ class Play():
 			return self.cards
 		elif self.isSingle(self.cards):
 			return "single"
+		elif self.isDuplicate(self.cards):
+			return self.isDuplicate(self.cards)
 		elif self.isChop(self.cards):
 			return "chop"
-		elif self.isDouble(self.cards):
-			return "double"
-		elif self.isTriple(self.cards):
-			return "triple"
-		elif self.isBomb(self.cards):
-			return "bomb"
-		elif self.isChain(self.cards):
-			return "chain"
-		return False
+		else: return self.isChain(self.cards)
 	
 	def order(self, cards):
 		value = {}
@@ -547,37 +541,27 @@ class Play():
 						return False
 						break
 				elif i == len(order) -1:
-					if int(order[i].value - 1) != int(order[i-1].value):
-						print("bad")
+					if int(order[i].value - 1) != int(order[i-1].value):						
 						return False
 						break
 				elif i > 0 and i < len(order) - 1: #doesnt work yet?
 					if (int(order[i].value + 1) != int(order[i+1].value)) or (int(order[i].value - 1) != int(order[i-1].value)):
 						return False				
 						break
-		return True
-			
-	def isDouble(self, cards):
-		if len(cards) != 2:
-			return False
-		else:
-			dub = [card.face for card in cards]
-			return len(set(dub))== 1
-		
-	def isTriple(self, cards):
-		if len(cards) != 3:
-			return False
-		else:
-			trip = [card.face for card in cards]
-			return len(set(trip))== 1
-		return True
-		
-	def isBomb(self, cards):
-		if len(cards) != 4:
-			return False
-		else:
-			bomb = [card.face for card in cards]
-			return len(set(bomb))== 1
+		return "chain"
+
+	def isDuplicate(self, cards):
+		dup = False
+		x = {2: "double", 3: "triple", 4:"bomb"}
+		for i in range(4):
+			if len(cards) != i:
+				continue
+			else:
+				dup = [card.face for card in cards]
+				break
+		if dup:
+			return x[i] if len(set(dup))== 1 else False	
+		else: return False
 		
 	def isChop(self, cards):	#not complete
 		if len(cards) != 6:
